@@ -18,7 +18,7 @@
 		0478754617DF6DFC004D083E /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0478754517DF6DFC004D083E /* OpenGL.framework */; };
 		0478754C17DF8ACD004D083E /* shader.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478754917DF8973004D083E /* shader.v.glsl */; };
 		0478754D17DF8ACF004D083E /* shader.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478754A17DF8A78004D083E /* shader.f.glsl */; };
-		0478754F17DFE540004D083E /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0478754E17DFE540004D083E /* libGLEW.a */; };
+		049B36C417E0BBDF0074BE1F /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049B36C317E0BBD60074BE1F /* libGLEW.a */; };
 		04C6C66E17E0AC9D00592AE9 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C6C66D17E0AC8900592AE9 /* libglfw3.a */; };
 /* End PBXBuildFile section */
 
@@ -286,8 +286,11 @@
 		0478754517DF6DFC004D083E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 		0478754917DF8973004D083E /* shader.v.glsl */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = shader.v.glsl; sourceTree = "<group>"; };
 		0478754A17DF8A78004D083E /* shader.f.glsl */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; path = shader.f.glsl; sourceTree = "<group>"; };
-		0478754E17DFE540004D083E /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libGLEW.a; path = ../../../../../../../usr/local/Cellar/glew/1.9.0/lib/libGLEW.a; sourceTree = "<group>"; };
 		0478755117E00554004D083E /* tile.tga */ = {isa = PBXFileReference; lastKnownFileType = file; name = tile.tga; path = GLFWTest/tile.tga; sourceTree = "<group>"; };
+		049B36C017E0BBD60074BE1F /* glew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glew.h; sourceTree = "<group>"; };
+		049B36C117E0BBD60074BE1F /* glxew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glxew.h; sourceTree = "<group>"; };
+		049B36C217E0BBD60074BE1F /* wglew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wglew.h; sourceTree = "<group>"; };
+		049B36C317E0BBD60074BE1F /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGLEW.a; sourceTree = "<group>"; };
 		04C6C66B17E0AC8900592AE9 /* glfw3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
 		04C6C66C17E0AC8900592AE9 /* glfw3native.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
 		04C6C66D17E0AC8900592AE9 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
@@ -298,7 +301,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				0478754F17DFE540004D083E /* libGLEW.a in Frameworks */,
 				0478754617DF6DFC004D083E /* OpenGL.framework in Frameworks */,
 				0478754417DF6DF5004D083E /* GLKit.framework in Frameworks */,
 				0478754317DF6DEE004D083E /* GLUT.framework in Frameworks */,
@@ -306,6 +308,7 @@
 				0478753C17DF6D88004D083E /* AppKit.framework in Frameworks */,
 				0478753A17DF6D1D004D083E /* ApplicationServices.framework in Frameworks */,
 				0478753617DF6CE8004D083E /* Foundation.framework in Frameworks */,
+				049B36C417E0BBDF0074BE1F /* libGLEW.a in Frameworks */,
 				04C6C66E17E0AC9D00592AE9 /* libglfw3.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -581,7 +584,6 @@
 		0478751D17DF6B77004D083E = {
 			isa = PBXGroup;
 			children = (
-				0478754E17DFE540004D083E /* libGLEW.a */,
 				0478754717DF88F7004D083E /* Shaders */,
 				0478755017E00549004D083E /* Textures */,
 				0478752817DF6B77004D083E /* GLFWTest */,
@@ -610,6 +612,7 @@
 		0478753417DF6C6B004D083E /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				049B36BE17E0BBD60074BE1F /* glew */,
 				04C6C66A17E0AC8900592AE9 /* glfw */,
 				045B310D17E0212E005BC291 /* glm */,
 				0478754517DF6DFC004D083E /* OpenGL.framework */,
@@ -641,6 +644,26 @@
 				0478755117E00554004D083E /* tile.tga */,
 			);
 			name = Textures;
+			sourceTree = "<group>";
+		};
+		049B36BE17E0BBD60074BE1F /* glew */ = {
+			isa = PBXGroup;
+			children = (
+				049B36BF17E0BBD60074BE1F /* GL */,
+				049B36C317E0BBD60074BE1F /* libGLEW.a */,
+			);
+			name = glew;
+			path = GLFWTest/libs/glew;
+			sourceTree = "<group>";
+		};
+		049B36BF17E0BBD60074BE1F /* GL */ = {
+			isa = PBXGroup;
+			children = (
+				049B36C017E0BBD60074BE1F /* glew.h */,
+				049B36C117E0BBD60074BE1F /* glxew.h */,
+				049B36C217E0BBD60074BE1F /* wglew.h */,
+			);
+			path = GL;
 			sourceTree = "<group>";
 		};
 		04C6C66A17E0AC8900592AE9 /* glfw */ = {
@@ -781,6 +804,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/1.9.0/lib,
 					"\"$(SRCROOT)/GLFWTest/libs/glfw\"",
+					"\"$(SRCROOT)/GLFWTest/libs/glew\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";
@@ -794,6 +818,7 @@
 					"$(inherited)",
 					/usr/local/Cellar/glew/1.9.0/lib,
 					"\"$(SRCROOT)/GLFWTest/libs/glfw\"",
+					"\"$(SRCROOT)/GLFWTest/libs/glew\"",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = "";

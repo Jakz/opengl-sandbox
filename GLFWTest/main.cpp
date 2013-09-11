@@ -259,8 +259,8 @@ int main(int argc, const char * argv[])
   
   glm::vec3 t1 = v2-v1;
   glm::vec3 t2 = v3-v1;
-  glm::vec3 normal = glm::normalize(glm::cross(t2, t1));
-  glm::vec4 pts[] = {glm::vec4(glm::vec3(0.0f), 1.0f), glm::vec4(normal, 1.0f)};
+  glm::vec3 normal = - glm::normalize(glm::cross(t2, t1));
+  glm::vec4 pts[] = {glm::vec4(glm::vec3(0.0f), 1.0f), glm::vec4(normal*0.5f, 1.0f)};
   
   GLuint vao2;
   GLuint bfs[3];
