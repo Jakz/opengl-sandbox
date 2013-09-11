@@ -9,8 +9,8 @@
 #define GL3_PROTOTYPES 1
 
 #include <iostream>
-#include <GL/glew.h>
-#include <GLFW/glfw3.h>
+#include "glew.h"
+#include "glfw3.h"
 #include "glm.hpp"
 #include "matrix_transform.hpp"
 
