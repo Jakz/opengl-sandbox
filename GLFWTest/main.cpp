@@ -253,6 +253,40 @@ int main(int argc, const char * argv[])
   viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
   
   
+  glm::vec3 v1 = glm::vec3(-0.5f, -0.5f, -0.0f);
+  glm::vec3 v2 = glm::vec3(0.5f, -0.5f, -0.0f);
+  glm::vec3 v3 = glm::vec3(-0.5f, 0.5f, -0.0f);
+  
+  glm::vec3 t1 = v2-v1;
+  glm::vec3 t2 = v3-v1;
+  glm::vec3 normal = glm::normalize(glm::cross(t2, t1));
+  glm::vec4 pts[] = {glm::vec4(glm::vec3(0.0f), 1.0f), glm::vec4(normal, 1.0f)};
+  
+  GLuint vao2;
+  GLuint bfs[3];
+  glGenVertexArrays(1, &vao2);
+  glBindVertexArray(vao2);
+    
+  glGenBuffers(3, &bfs[0]);
+  glBindBuffer(GL_ARRAY_BUFFER, bfs[0]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(pts), &pts, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(data.position);
+  glVertexAttribPointer(data.position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  
+  GLfloat ccc[] = { 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f};
+  
+  glBindBuffer(GL_ARRAY_BUFFER, bfs[1]);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(ccc), ccc, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(data.color);
+  glVertexAttribPointer(data.color, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  
+  GLushort iii[] = {0,1};
+  
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bfs[2]);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(iii), iii, GL_STATIC_DRAW);
+  
+  glBindVertexArray(0);
+  
 
   //glm::mat4 pvMatrix = projectionMatrix * viewMatrix;
   
@@ -280,6 +314,10 @@ int main(int argc, const char * argv[])
     
     glBindVertexArray(data.vao);
     glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (void*)0);
+    
+    glBindVertexArray(vao2);
+    glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, (void*)0);
+
     
     
     glfwSwapBuffers(window);
