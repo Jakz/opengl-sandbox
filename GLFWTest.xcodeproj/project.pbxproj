@@ -20,6 +20,9 @@
 		0478754D17DF8ACF004D083E /* shader.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478754A17DF8A78004D083E /* shader.f.glsl */; };
 		049B36C417E0BBDF0074BE1F /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049B36C317E0BBD60074BE1F /* libGLEW.a */; };
 		04C6C66E17E0AC9D00592AE9 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C6C66D17E0AC8900592AE9 /* libglfw3.a */; };
+		04C75E0417E3998B007D4C7C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0217E3998B007D4C7C /* Camera.cpp */; };
+		04C75E0817E39B09007D4C7C /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0617E39B09007D4C7C /* FileUtils.cpp */; };
+		04CB72F417E231A100602484 /* ShaderCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04CB72F217E231A100602484 /* ShaderCache.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -275,7 +278,6 @@
 		0478752617DF6B77004D083E /* GLFWTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GLFWTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0478752917DF6B77004D083E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		0478752B17DF6B77004D083E /* GLFWTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = GLFWTest.1; sourceTree = "<group>"; };
-		0478753217DF6C51004D083E /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libglfw3.a; path = /usr/local/lib/libglfw3.a; sourceTree = "<absolute>"; };
 		0478753517DF6CE8004D083E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0478753717DF6D10004D083E /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
 		0478753917DF6D1D004D083E /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = System/Library/Frameworks/ApplicationServices.framework; sourceTree = SDKROOT; };
@@ -294,6 +296,13 @@
 		04C6C66B17E0AC8900592AE9 /* glfw3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
 		04C6C66C17E0AC8900592AE9 /* glfw3native.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
 		04C6C66D17E0AC8900592AE9 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
+		04C75E0217E3998B007D4C7C /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		04C75E0317E3998B007D4C7C /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
+		04C75E0517E399EC007D4C7C /* Includes.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Includes.h; sourceTree = "<group>"; };
+		04C75E0617E39B09007D4C7C /* FileUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FileUtils.cpp; sourceTree = "<group>"; };
+		04C75E0717E39B09007D4C7C /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
+		04CB72F217E231A100602484 /* ShaderCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderCache.cpp; sourceTree = "<group>"; };
+		04CB72F317E231A100602484 /* ShaderCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderCache.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -584,6 +593,13 @@
 		0478751D17DF6B77004D083E = {
 			isa = PBXGroup;
 			children = (
+				04C75E0617E39B09007D4C7C /* FileUtils.cpp */,
+				04C75E0717E39B09007D4C7C /* FileUtils.h */,
+				04C75E0517E399EC007D4C7C /* Includes.h */,
+				04C75E0217E3998B007D4C7C /* Camera.cpp */,
+				04C75E0317E3998B007D4C7C /* Camera.h */,
+				04CB72F317E231A100602484 /* ShaderCache.h */,
+				04CB72F217E231A100602484 /* ShaderCache.cpp */,
 				0478754717DF88F7004D083E /* Shaders */,
 				0478755017E00549004D083E /* Textures */,
 				0478752817DF6B77004D083E /* GLFWTest */,
@@ -623,7 +639,6 @@
 				0478753917DF6D1D004D083E /* ApplicationServices.framework */,
 				0478753717DF6D10004D083E /* Quartz.framework */,
 				0478753517DF6CE8004D083E /* Foundation.framework */,
-				0478753217DF6C51004D083E /* libglfw3.a */,
 			);
 			name = libs;
 			sourceTree = "<group>";
@@ -730,6 +745,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0478752A17DF6B77004D083E /* main.cpp in Sources */,
+				04CB72F417E231A100602484 /* ShaderCache.cpp in Sources */,
+				04C75E0417E3998B007D4C7C /* Camera.cpp in Sources */,
+				04C75E0817E39B09007D4C7C /* FileUtils.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

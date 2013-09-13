@@ -6,13 +6,14 @@
 //  Copyright (c) 2013 Jack. All rights reserved.
 //
 
-#define GL3_PROTOTYPES 1
 
+#include "Includes.h"
+
+
+#include "FileUtils.h"
+#include "ShaderCache.h"
 #include <iostream>
-#include "glew.h"
-#include "glfw3.h"
-#include "glm.hpp"
-#include "matrix_transform.hpp"
+
 
 
 static void error_callback(int error, const char* description)
@@ -28,18 +29,6 @@ static void key_callback(GLFWwindow* window, int key, int scancode, int action, 
 /*typedef void (PFNGLGETSHADERIVPROC)(GLuint shader, GLenum pname, GLint *params);
 typedef void (PFNGLGETSHADERINFOLOGPROC)(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog);*/
 
-static void show_info_log(GLuint object, PFNGLGETSHADERIVPROC glGet__iv, PFNGLGETSHADERINFOLOGPROC glGet__InfoLog)
-{
-  GLint log_length;
-  char *log;
-  
-  glGet__iv(object, GL_INFO_LOG_LENGTH, &log_length);
-  log = (char*)malloc(log_length);
-  glGet__InfoLog(object, log_length, NULL, log);
-  fprintf(stderr, "%s", log);
-  free(log);
-}
-
 struct Data
 {
   GLuint vertexBuffer;
@@ -48,8 +37,7 @@ struct Data
   
   GLuint vao;
   
-  GLuint vshader, fshader;
-  GLuint program;
+  Program* program;
   
   GLint position;
   GLint color;
@@ -74,74 +62,6 @@ static GLuint createBuffer(GLenum kind, const void *data, GLsizei size)
   return buffer;
 }
 
-static long fileLength(FILE *file)
-{
-  long c = ftell(file);
-  fseek(file, 0, SEEK_END);
-  long s = ftell(file);
-  fseek(file, c, SEEK_SET);
-  return s;
-}
-
-static GLchar *fileContents(const char *name, GLint *len)
-{
-  FILE *in = fopen(name, "rb");
-  long length = fileLength(in);
-  GLchar *data = new GLchar[length];
-  fread(data, sizeof(GLchar), length, in);
-  *len = static_cast<int>(length);
-  fclose(in);
-  return data;
-}
-
-static GLuint compileShader(GLenum kind, const char* filename)
-{
-  GLint length;
-  GLchar *data = fileContents(filename, &length);
-  GLuint shader;
-  GLint shaderOk;
-  
-  if (!data)
-    return 0;
-
-  shader = glCreateShader(kind);
-  glShaderSource(shader, 1, (const GLchar**)&data, &length);
-  delete [] data;
-  glCompileShader(shader);
-  
-  glGetShaderiv(shader, GL_COMPILE_STATUS, &shaderOk);
-  if (!shaderOk)
-  {
-    fprintf(stderr, "Failed to compile %s:\n", filename);
-    show_info_log(shader, glGetShaderiv, glGetShaderInfoLog);
-    glDeleteShader(shader);
-    return 0;
-  }
-  
-  return shader;
-}
-
-static GLuint linkProgram(GLuint vShader, GLuint fShader)
-{
-  GLint result;
-  
-  GLuint program = glCreateProgram();
-  glAttachShader(program, vShader);
-  glAttachShader(program, fShader);
-  //glBindFragDataLocation(data.program, 0, "fragColor");
-  glLinkProgram(program);
-  glGetProgramiv(program, GL_LINK_STATUS, &result);
-  if (!result)
-  {
-    fprintf(stderr, "Failed to link shader program:\n");
-    show_info_log(program, glGetProgramiv, glGetProgramInfoLog);
-    glDeleteProgram(program);
-    return 0;
-  }
-  
-  return program;
-}
-
 static const GLfloat vertexData[] = {
   -0.5f, -0.5f, -0.0f, 1.0f,
   0.5f, -0.5f, -0.0f, 1.0f,
@@ -160,20 +80,18 @@ static const GLushort bufferData[] = { 0,1,2,3};
 
 static void allocateResources()
 {
-  data.vshader = compileShader(GL_VERTEX_SHADER, "shader.v.glsl");
-  data.fshader = compileShader(GL_FRAGMENT_SHADER, "shader.f.glsl");
-
+  Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");
+  Shader *fragment = ShaderCache::compileFragmentShader("shader.f.glsl");
   
+  data.program = ShaderCache::linkProgramOnce(vertex, fragment);
   
-  data.program = linkProgram(data.vshader, data.fshader);
+  data.position = glGetAttribLocation(data.program->ident, "a_position");
+  data.color = glGetAttribLocation(data.program->ident, "a_color");
+  data.ptimer = glGetUniformLocation(data.program->ident, "u_timer");
   
-  data.position = glGetAttribLocation(data.program, "a_position");
-  data.color = glGetAttribLocation(data.program, "a_color");
-  data.ptimer = glGetUniformLocation(data.program, "u_timer");
-  
-  data.pmatrixLoc = glGetUniformLocation(data.program, "pMatrix");
-  data.vmatrixLoc = glGetUniformLocation(data.program, "vMatrix");
-  data.mmatrixLoc = glGetUniformLocation(data.program, "mMatrix");
+  data.pmatrixLoc = glGetUniformLocation(data.program->ident, "pMatrix");
+  data.vmatrixLoc = glGetUniformLocation(data.program->ident, "vMatrix");
+  data.mmatrixLoc = glGetUniformLocation(data.program->ident, "mMatrix");
   
   
   glGenVertexArrays(1, &data.vao);
@@ -305,7 +223,7 @@ int main(int argc, const char * argv[])
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    glUseProgram(data.program);
+    data.program->use();
     glUniform1f(data.ptimer, data.timer);
     
     glUniformMatrix4fv(data.pmatrixLoc, 1, GL_FALSE, &projectionMatrix[0][0]);
