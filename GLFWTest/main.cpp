@@ -12,6 +12,7 @@
 
 #include "FileUtils.h"
 #include "ShaderCache.h"
+#include "Camera.h"
 #include <iostream>
 
 
@@ -20,11 +21,14 @@ static void error_callback(int error, const char* description)
 {
   fputs(description, stderr);
 }
+
 static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
   if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
     glfwSetWindowShouldClose(window, GL_TRUE);
 }
+
+static Camera* camera = new Camera();
 
 /*typedef void (PFNGLGETSHADERIVPROC)(GLuint shader, GLenum pname, GLint *params);
 typedef void (PFNGLGETSHADERINFOLOGPROC)(GLuint shader, GLsizei maxLength, GLsizei *length, GLchar *infoLog);*/
@@ -116,6 +120,11 @@ static void allocateResources()
   glBindVertexArray(0);
 }
 
+void callBackResizedWindow(GLFWwindow *window, int width, int height)
+{
+  camera->adjustRatio(static_cast<float>(width)/height);
+}
+
 int main(int argc, const char * argv[])
 {
   GLFWwindow* window;
@@ -144,6 +153,7 @@ int main(int argc, const char * argv[])
   glfwMakeContextCurrent(window);
   
   glfwSetKeyCallback(window, key_callback);
+  glfwSetFramebufferSizeCallback(window, callBackResizedWindow);
   
   glewExperimental = true;
   
@@ -167,8 +177,12 @@ int main(int argc, const char * argv[])
   glm::mat4 viewMatrix;
   glm::mat4 modelMatrix;
   
+  
   projectionMatrix = glm::perspective(50.0f, 800.0f/600.0f, 0.1f, 100.0f);
   viewMatrix = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -1.0f));
+  
+  camera->setProjection(50.0f, 800.0f/600.0f, 0.1, 100.0f);
+  camera->lookAt(glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f), glm::vec3(0,1,0));
   
   
   glm::vec3 v1 = glm::vec3(-0.5f, -0.5f, -0.0f);
@@ -226,8 +240,8 @@ int main(int argc, const char * argv[])
     data.program->use();
     glUniform1f(data.ptimer, data.timer);
     
-    glUniformMatrix4fv(data.pmatrixLoc, 1, GL_FALSE, &projectionMatrix[0][0]);
-    glUniformMatrix4fv(data.vmatrixLoc, 1, GL_FALSE, &viewMatrix[0][0]);
+    glUniformMatrix4fv(data.pmatrixLoc, 1, GL_FALSE, &camera->projectionMatrix()[0][0]);
+    glUniformMatrix4fv(data.vmatrixLoc, 1, GL_FALSE, &camera->cameraMatrix()[0][0]);
     glUniformMatrix4fv(data.mmatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
     
     glBindVertexArray(data.vao);

@@ -276,7 +276,7 @@
 		045B31F017E0212E005BC291 /* wrap.inl */ = {isa = PBXFileReference; lastKnownFileType = text; path = wrap.inl; sourceTree = "<group>"; };
 		045B31F217E0212E005BC291 /* xstream.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = xstream.hpp; sourceTree = "<group>"; };
 		0478752617DF6B77004D083E /* GLFWTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GLFWTest; sourceTree = BUILT_PRODUCTS_DIR; };
-		0478752917DF6B77004D083E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		0478752917DF6B77004D083E /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = GLFWTest/main.cpp; sourceTree = "<group>"; };
 		0478752B17DF6B77004D083E /* GLFWTest.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = GLFWTest.1; sourceTree = "<group>"; };
 		0478753517DF6CE8004D083E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0478753717DF6D10004D083E /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -600,6 +600,7 @@
 				04C75E0317E3998B007D4C7C /* Camera.h */,
 				04CB72F317E231A100602484 /* ShaderCache.h */,
 				04CB72F217E231A100602484 /* ShaderCache.cpp */,
+				0478752917DF6B77004D083E /* main.cpp */,
 				0478754717DF88F7004D083E /* Shaders */,
 				0478755017E00549004D083E /* Textures */,
 				0478752817DF6B77004D083E /* GLFWTest */,
@@ -619,7 +620,6 @@
 		0478752817DF6B77004D083E /* GLFWTest */ = {
 			isa = PBXGroup;
 			children = (
-				0478752917DF6B77004D083E /* main.cpp */,
 				0478752B17DF6B77004D083E /* GLFWTest.1 */,
 			);
 			path = GLFWTest;
