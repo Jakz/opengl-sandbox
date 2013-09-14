@@ -152,6 +152,9 @@ int main(int argc, const char * argv[])
   /* Make the window's context current */
   glfwMakeContextCurrent(window);
   
+  glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+  glfwSetCursorPos(window, 0, 0);
+  
   glfwSetKeyCallback(window, key_callback);
   glfwSetFramebufferSizeCallback(window, callBackResizedWindow);
   
@@ -222,6 +225,9 @@ int main(int argc, const char * argv[])
 
   //glm::mat4 pvMatrix = projectionMatrix * viewMatrix;
   
+  double mouseX, mouseY;
+  double mouseXo = 400, mouseYo = 300;
+  
   while (!glfwWindowShouldClose(window))
   {
     data.timer = glfwGetTime();
@@ -254,6 +260,37 @@ int main(int argc, const char * argv[])
     
     glfwSwapBuffers(window);
     glfwPollEvents();
+    
+    /*glfwGetCursorPos(window, &mouseX, &mouseY);
+    if (mouseX >= 0 && mouseX <= 800 && mouseY >= 0 && mouseY < 600)
+    {
+      double mouseXd = mouseX - mouseXo, mouseYd = mouseY - mouseYo;
+      camera->rotate(mouseXd/5.0f, mouseYd/5.0f);
+      
+      mouseXo = mouseX;
+      mouseYo = mouseY;
+    }*/
+    
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+    {
+      glm::vec3 forward = camera->directionForward();
+      camera->translate(forward*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+    {
+      glm::vec3 forward = camera->directionForward();
+      camera->translate(-forward*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+    {
+      glm::vec3 right = camera->directionRight();
+      camera->translate(-right*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+    {
+      glm::vec3 right = camera->directionRight();
+      camera->translate(right*0.03f);
+    }
   }
   
   glfwTerminate();

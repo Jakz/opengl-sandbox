@@ -26,7 +26,19 @@ void Camera::adjustRatio(float ratio)
   projection = glm::perspective(this->fov, this->ratio, this->znear, this->zfar);
 }
 
+void Camera::translate(glm::vec3 delta)
+{
+  camera = glm::translate(camera, -delta);
+}
+
+void Camera::rotate(float horizontal, float vertical)
+{
+  camera = glm::rotate(camera, horizontal, glm::vec3(0,1,0));
+  camera = glm::rotate(camera, vertical, glm::vec3(1,0,0));
+}
+
 void Camera::lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up)
 {
+  this->position = position;
   camera = glm::lookAt(position, target, up);
 }

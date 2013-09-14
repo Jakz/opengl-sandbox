@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		045654F017E3E6A500765B9A /* libGLEW.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = 049B36C317E0BBD60074BE1F /* libGLEW.a */; };
+		045654F117E3E6AA00765B9A /* libglfw3.a in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C6C66D17E0AC8900592AE9 /* libglfw3.a */; };
 		0478752A17DF6B77004D083E /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0478752917DF6B77004D083E /* main.cpp */; };
 		0478752C17DF6B77004D083E /* GLFWTest.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478752B17DF6B77004D083E /* GLFWTest.1 */; };
 		0478753617DF6CE8004D083E /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0478753517DF6CE8004D083E /* Foundation.framework */; };
@@ -42,6 +44,8 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				045654F117E3E6AA00765B9A /* libglfw3.a in CopyFiles */,
+				045654F017E3E6A500765B9A /* libGLEW.a in CopyFiles */,
 				0478754C17DF8ACD004D083E /* shader.v.glsl in CopyFiles */,
 				0478754D17DF8ACF004D083E /* shader.f.glsl in CopyFiles */,
 			);
