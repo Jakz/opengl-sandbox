@@ -46,14 +46,6 @@ struct Data
   
   Program* program;
   
-  GLint position;
-  GLint color;
-  GLint ptimer;
-  
-  GLint pmatrixLoc;
-  GLint vmatrixLoc;
-  GLint mmatrixLoc;
-  
   Image *image;
   Texture *texture;
   
@@ -77,6 +69,7 @@ static const GLfloat vertexData[] = {
   0.5f, -0.5f, -0.5f, 1.0f,
   -0.5f, 0.5f, -0.5f, 1.0f,
   0.5f, 0.5f, -0.5f, 1.0f,
+  
   -0.5f, -0.5f, 0.5f, 1.0f,
   0.5f, -0.5f, 0.5f, 1.0f,
   -0.5f, 0.5f, 0.5f, 1.0f,
@@ -99,6 +92,7 @@ static const GLfloat textureData[] = {
   1.0f, 0.0f,
   0.0f, 1.0f,
   1.0f, 1.0f,
+  
   0.0f, 0.0f,
   1.0f, 0.0f,
   0.0f, 1.0f,
@@ -117,44 +111,44 @@ static const GLushort bufferData[] = {
 static void allocateResources()
 {
   data.image = new Image("tile.png");
-  data.texture = Texture::generate(data.image);
+  data.texture = Texture::generate(data.image, GL_NEAREST);
   
   Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");
   Shader *fragment = ShaderCache::compileFragmentShader("shader.f.glsl");
   
-  data.program = ShaderCache::linkProgramOnce(vertex, fragment);
-  
-  data.position = glGetAttribLocation(data.program->ident, "a_position");
-  data.color = glGetAttribLocation(data.program->ident, "a_color");
-  data.ptimer = glGetUniformLocation(data.program->ident, "u_timer");
-  
-  data.pmatrixLoc = glGetUniformLocation(data.program->ident, "pMatrix");
-  data.vmatrixLoc = glGetUniformLocation(data.program->ident, "vMatrix");
-  data.mmatrixLoc = glGetUniformLocation(data.program->ident, "mMatrix");
-  
-  
+  data.program = ShaderCache::linkProgram(vertex, fragment);
+  ShaderCache::linkProgram(data.program);
+  data.program->enableAttrib("a_position", ATTRIB_POSITION);
+  data.program->enableAttrib("a_color", ATTRIB_COLOR);
+  data.program->enableAttrib("a_texCoord", ATTRIB_TEX_COORDS);
+
+  data.program->enableUniform("u_timer", UNIFORM_TIMER);
+  data.program->enableUniform("pMatrix", UNIFORM_MATRIX_PROJECTION);
+  data.program->enableUniform("vMatrix", UNIFORM_MATRIX_VIEW);
+  data.program->enableUniform("mMatrix", UNIFORM_MATRIX_MODEL);
+  data.program->enableUniform("tex", UNIFORM_TEXTURE);
+
   glGenVertexArrays(1, &data.vao);
   glBindVertexArray(data.vao);
   
   glGenBuffers(1, &data.vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, data.vertexBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-  glEnableVertexAttribArray(data.position);
-  glVertexAttribPointer(data.position, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  glEnableVertexAttribArray(data.program->attrib(ATTRIB_POSITION));
+  glVertexAttribPointer(data.program->attrib(ATTRIB_POSITION), 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
 
-  glGenBuffers(1, &data.colorBuffer);
+  /*glGenBuffers(1, &data.colorBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, data.colorBuffer);
   glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
-  glEnableVertexAttribArray(data.color);
-  glVertexAttribPointer(data.color, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  glEnableVertexAttribArray(data.program->attrib(ATTRIB_COLOR));
+  glVertexAttribPointer(data.program->attrib(ATTRIB_COLOR), 4, GL_FLOAT, GL_FALSE, 0, (void*)0);*/
   
-  GLuint texCoords = data.program->attrib("a_texCoord");
   GLuint texCoordsP;
   glGenBuffers(1, &texCoordsP);
   glBindBuffer(GL_ARRAY_BUFFER, texCoordsP);
   glBufferData(GL_ARRAY_BUFFER, sizeof(textureData), textureData, GL_STATIC_DRAW);
-  glEnableVertexAttribArray(texCoords);
-  glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  glEnableVertexAttribArray(data.program->attrib(ATTRIB_TEX_COORDS));
+  glVertexAttribPointer(data.program->attrib(ATTRIB_TEX_COORDS), 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
   
   glGenBuffers(1, &data.elementBuffer);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.elementBuffer);
@@ -208,12 +202,9 @@ int main(int argc, const char * argv[])
     exit(EXIT_FAILURE);
 
   allocateResources();
-  
-  glBindBuffer(GL_ARRAY_BUFFER, data.vertexBuffer);
-  glEnableVertexAttribArray(data.position);
 
   glEnable(GL_DEPTH_TEST);
-  glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+  glClearColor(0.9f, 0.9f, 0.9f, 0.9f);
   glDepthMask(GL_TRUE);
   glDepthFunc(GL_LESS);
   glEnable(GL_BLEND);
@@ -221,7 +212,7 @@ int main(int argc, const char * argv[])
   
   glm::mat4 projectionMatrix;
   glm::mat4 viewMatrix;
-  glm::mat4 modelMatrix;
+  glm::mat4 modelMatrix, baseModelMatrix;
   
   
   projectionMatrix = glm::perspective(50.0f, 800.0f/600.0f, 0.1f, 100.0f);
@@ -275,7 +266,7 @@ int main(int argc, const char * argv[])
   {
     data.timer = glfwGetTime();
     
-    modelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,0.0));
+    baseModelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
     
     float ratio;
     int width, height;
@@ -287,18 +278,31 @@ int main(int argc, const char * argv[])
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
     data.program->use();
-    glUniform1f(data.ptimer, data.timer);
     
-    glUniformMatrix4fv(data.pmatrixLoc, 1, GL_FALSE, &camera->projectionMatrix()[0][0]);
-    glUniformMatrix4fv(data.vmatrixLoc, 1, GL_FALSE, &camera->cameraMatrix()[0][0]);
-    glUniformMatrix4fv(data.mmatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
+    data.program->setUniform(data.program->uniform(UNIFORM_TIMER), data.timer);
+    data.program->setUniform(data.program->uniform(UNIFORM_MATRIX_PROJECTION), camera->projectionMatrix());
+    data.program->setUniform(data.program->uniform(UNIFORM_MATRIX_VIEW), camera->cameraMatrix());
+    
+
     
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, data.texture->ident);
-    data.program->setUniform("tex", 0);
+    data.program->setUniform(data.program->uniform(UNIFORM_TEXTURE), 0);
     
     glBindVertexArray(data.vao);
+    modelMatrix = baseModelMatrix;
+    data.program->setUniform(data.program->uniform(UNIFORM_MATRIX_MODEL), modelMatrix);
     glDrawElements(GL_TRIANGLES, 12/*sizeof(bufferData)/sizeof(bufferData[0])*/, GL_UNSIGNED_SHORT, (void*)0);
+    
+    modelMatrix = glm::rotate(baseModelMatrix, 90.0f, glm::vec3(0.0f,1.0f,0.0f));
+    data.program->setUniform(data.program->uniform(UNIFORM_MATRIX_MODEL), modelMatrix);
+    glDrawElements(GL_TRIANGLES, 12/*sizeof(bufferData)/sizeof(bufferData[0])*/, GL_UNSIGNED_SHORT, (void*)0);
+
+    modelMatrix = glm::rotate(baseModelMatrix, 90.0f, glm::vec3(1.0f,0.0f,0.0f));
+    data.program->setUniform(data.program->uniform(UNIFORM_MATRIX_MODEL), modelMatrix);
+    glDrawElements(GL_TRIANGLES, 12/*sizeof(bufferData)/sizeof(bufferData[0])*/, GL_UNSIGNED_SHORT, (void*)0);
+    
+    
     glBindVertexArray(0);
     
     //GLenum error = glGetError();

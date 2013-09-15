@@ -15,12 +15,26 @@
 #include <unordered_map>
 #include <string>
 
-enum LocationAttrib : GLuint
+enum LocationAttrib : u32
 {
-  LOCATION_POSITION = 0,
-  LOCATION_COLOR = 1,
-  LOCATION_NORMAL = 2,
-  LOCATION_TEX_COORDS = 3,
+  ATTRIB_POSITION = 0,
+  ATTRIB_COLOR = 1,
+  ATTRIB_NORMAL = 2,
+  ATTRIB_TEX_COORDS = 3,
+  
+
+  ATTRIBS_COUNT
+};
+  
+enum LocationUniform : u32
+{
+  UNIFORM_MATRIX_MODEL = 0,
+  UNIFORM_MATRIX_VIEW,
+  UNIFORM_MATRIX_PROJECTION,
+  UNIFORM_TEXTURE,
+  UNIFORM_TIMER,
+  
+  UNIFORMS_COUNT
 };
 
 struct Shader
@@ -34,6 +48,8 @@ struct Shader
 class Program
 {
   private:
+    GLint attribs[ATTRIBS_COUNT];
+    GLint uniforms[UNIFORMS_COUNT];
   
   public:
     const GLuint ident;
@@ -44,45 +60,57 @@ class Program
     void use() { glUseProgram(ident); }
     void unuse() { glUseProgram(0); }
   
+    void enableAttrib(const GLchar *name, const LocationAttrib location)
+    {
+      attribs[location] = glGetAttribLocation(ident, name);
+      //glBindAttribLocation(ident, location, name);
+    }
+  
+    void enableUniform(const GLchar *name, const LocationUniform location)
+    {
+      uniforms[location] = glGetUniformLocation(ident, name);
+    }
+  
+    GLint attrib(LocationAttrib location) const { return attribs[location]; }
+    GLint uniform(LocationUniform location) const { return uniforms[location]; }
+  
     GLint attrib(const GLchar* attribName) const;
     GLint uniform(const GLchar* uniformName) const;
   
     #define _SHADER_ATTRIB_UNIFORM_SETTERS(OGL_TYPE) \
-    void setAttrib(const GLchar* attribName, OGL_TYPE v0); \
-    void setAttrib(const GLchar* attribName, OGL_TYPE v0, OGL_TYPE v1); \
-    void setAttrib(const GLchar* attribName, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2); \
-    void setAttrib(const GLchar* attribName, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3); \
+    void setAttrib(const GLuint ident, OGL_TYPE v0); \
+    void setAttrib(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1); \
+    void setAttrib(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2); \
+    void setAttrib(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3); \
     \
-    void setAttrib1v(const GLchar* attribName, const OGL_TYPE* v); \
-    void setAttrib2v(const GLchar* attribName, const OGL_TYPE* v); \
-    void setAttrib3v(const GLchar* attribName, const OGL_TYPE* v); \
-    void setAttrib4v(const GLchar* attribName, const OGL_TYPE* v); \
+    void setAttrib1v(const GLuint ident, const OGL_TYPE* v); \
+    void setAttrib2v(const GLuint ident, const OGL_TYPE* v); \
+    void setAttrib3v(const GLuint ident, const OGL_TYPE* v); \
+    void setAttrib4v(const GLuint ident, const OGL_TYPE* v); \
     \
-    void setUniform(const GLchar* uniformName, OGL_TYPE v0); \
-    void setUniform(const GLchar* uniformName, OGL_TYPE v0, OGL_TYPE v1); \
-    void setUniform(const GLchar* uniformName, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2); \
-    void setUniform(const GLchar* uniformName, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3); \
+    void setUniform(const GLuint ident, OGL_TYPE v0); \
+    void setUniform(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1); \
+    void setUniform(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2); \
+    void setUniform(const GLuint ident, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3); \
     \
-    void setUniform1v(const GLchar* uniformName, const OGL_TYPE* v, GLsizei count=1); \
-    void setUniform2v(const GLchar* uniformName, const OGL_TYPE* v, GLsizei count=1); \
-    void setUniform3v(const GLchar* uniformName, const OGL_TYPE* v, GLsizei count=1); \
-    void setUniform4v(const GLchar* uniformName, const OGL_TYPE* v, GLsizei count=1); \
+    void setUniform1v(const GLuint ident, const OGL_TYPE* v, GLsizei count=1); \
+    void setUniform2v(const GLuint ident, const OGL_TYPE* v, GLsizei count=1); \
+    void setUniform3v(const GLuint ident, const OGL_TYPE* v, GLsizei count=1); \
+    void setUniform4v(const GLuint ident, const OGL_TYPE* v, GLsizei count=1); \
 
     _SHADER_ATTRIB_UNIFORM_SETTERS(GLfloat)
     _SHADER_ATTRIB_UNIFORM_SETTERS(GLdouble)
     _SHADER_ATTRIB_UNIFORM_SETTERS(GLint)
     _SHADER_ATTRIB_UNIFORM_SETTERS(GLuint)
   
-    void setUniformMatrix2(const GLchar* uniformName, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
-    void setUniformMatrix3(const GLchar* uniformName, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
-    void setUniformMatrix4(const GLchar* uniformName, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
-    void setUniform(const GLchar* uniformName, const glm::mat2& m, GLboolean transpose=GL_FALSE);
-    void setUniform(const GLchar* uniformName, const glm::mat3& m, GLboolean transpose=GL_FALSE);
-    void setUniform(const GLchar* uniformName, const glm::mat4& m, GLboolean transpose=GL_FALSE);
-    void setUniform(const GLchar* uniformName, const glm::vec3& v);
-    void setUniform(const GLchar* uniformName, const glm::vec4& v);
-  
-    
+    void setUniformMatrix2(const GLuint ident, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
+    void setUniformMatrix3(const GLuint ident, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
+    void setUniformMatrix4(const GLuint ident, const GLfloat* v, GLsizei count=1, GLboolean transpose=GL_FALSE);
+    void setUniform(const GLuint ident, const glm::mat2& m, GLboolean transpose=GL_FALSE);
+    void setUniform(const GLuint ident, const glm::mat3& m, GLboolean transpose=GL_FALSE);
+    void setUniform(const GLuint ident, const glm::mat4& m, GLboolean transpose=GL_FALSE);
+    void setUniform(const GLuint ident, const glm::vec3& v);
+    void setUniform(const GLuint ident, const glm::vec4& v);
 };
 
 
