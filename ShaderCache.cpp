@@ -211,3 +211,32 @@ Program *ShaderCache::linkProgramOnce(Shader *vertex, Shader *fragment)
   
   return program;
 }
+
+Program *ShaderCache::prelinkProgram(Shader *vertex, Shader *fragment)
+{
+  GLuint ident = glCreateProgram();
+  glAttachShader(ident, vertex->ident);
+  glAttachShader(ident, fragment->ident);
+  
+  return new Program(ident);
+}
+
+bool ShaderCache::linkProgram(Program *program)
+{
+  glLinkProgram(program->ident);
+  
+  GLint result;
+  glGetProgramiv(program->ident, GL_LINK_STATUS, &result);
+  if (!result)
+  {
+    fprintf(stderr, "Failed to link shader program:\n");
+    showErrorLog(program->ident, glGetProgramiv, glGetProgramInfoLog);
+    glDeleteProgram(program->ident);
+    return false;
+  }
+  
+  // TODO: always detach?
+  
+  // TODO add to collection
+  return true;
+}

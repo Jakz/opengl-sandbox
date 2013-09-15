@@ -15,6 +15,14 @@
 #include <unordered_map>
 #include <string>
 
+enum LocationAttrib : GLuint
+{
+  LOCATION_POSITION = 0,
+  LOCATION_COLOR = 1,
+  LOCATION_NORMAL = 2,
+  LOCATION_TEX_COORDS = 3,
+};
+
 struct Shader
 {
   const GLenum type;
@@ -73,6 +81,8 @@ class Program
     void setUniform(const GLchar* uniformName, const glm::mat4& m, GLboolean transpose=GL_FALSE);
     void setUniform(const GLchar* uniformName, const glm::vec3& v);
     void setUniform(const GLchar* uniformName, const glm::vec4& v);
+  
+    
 };
 
 
@@ -97,6 +107,9 @@ class ShaderCache
   
     static Program *linkProgram(Shader *vertex, Shader *fragment);
     static Program *linkProgramOnce(Shader *vertex, Shader *fragment);
+  
+    static Program *prelinkProgram(Shader *vertex, Shader *fragment);
+    static bool linkProgram(Program *program);
 };
 
 
