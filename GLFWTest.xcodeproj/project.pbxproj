@@ -21,6 +21,9 @@
 		0478754C17DF8ACD004D083E /* shader.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478754917DF8973004D083E /* shader.v.glsl */; };
 		0478754D17DF8ACF004D083E /* shader.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0478754A17DF8A78004D083E /* shader.f.glsl */; };
 		049B36C417E0BBDF0074BE1F /* libGLEW.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 049B36C317E0BBD60074BE1F /* libGLEW.a */; };
+		04C6050C17E523CC00BC4B04 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C6050A17E523CC00BC4B04 /* Image.cpp */; };
+		04C6050E17E5271D00BC4B04 /* tile.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04C6050D17E5270E00BC4B04 /* tile.png */; };
+		04C6050F17E5273800BC4B04 /* stb_image.c in Sources */ = {isa = PBXBuildFile; fileRef = 04C6050817E5239200BC4B04 /* stb_image.c */; };
 		04C6C66E17E0AC9D00592AE9 /* libglfw3.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 04C6C66D17E0AC8900592AE9 /* libglfw3.a */; };
 		04C75E0417E3998B007D4C7C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0217E3998B007D4C7C /* Camera.cpp */; };
 		04C75E0817E39B09007D4C7C /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0617E39B09007D4C7C /* FileUtils.cpp */; };
@@ -44,6 +47,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 16;
 			files = (
+				04C6050E17E5271D00BC4B04 /* tile.png in CopyFiles */,
 				045654F117E3E6AA00765B9A /* libglfw3.a in CopyFiles */,
 				045654F017E3E6A500765B9A /* libGLEW.a in CopyFiles */,
 				0478754C17DF8ACD004D083E /* shader.v.glsl in CopyFiles */,
@@ -297,6 +301,11 @@
 		049B36C117E0BBD60074BE1F /* glxew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glxew.h; sourceTree = "<group>"; };
 		049B36C217E0BBD60074BE1F /* wglew.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = wglew.h; sourceTree = "<group>"; };
 		049B36C317E0BBD60074BE1F /* libGLEW.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libGLEW.a; sourceTree = "<group>"; };
+		04C6050817E5239200BC4B04 /* stb_image.c */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.c; path = stb_image.c; sourceTree = "<group>"; };
+		04C6050917E5239200BC4B04 /* stb_image.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = stb_image.h; sourceTree = "<group>"; };
+		04C6050A17E523CC00BC4B04 /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
+		04C6050B17E523CC00BC4B04 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
+		04C6050D17E5270E00BC4B04 /* tile.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tile.png; path = GLFWTest/tile.png; sourceTree = "<group>"; };
 		04C6C66B17E0AC8900592AE9 /* glfw3.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3.h; sourceTree = "<group>"; };
 		04C6C66C17E0AC8900592AE9 /* glfw3native.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = glfw3native.h; sourceTree = "<group>"; };
 		04C6C66D17E0AC8900592AE9 /* libglfw3.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libglfw3.a; sourceTree = "<group>"; };
@@ -597,6 +606,8 @@
 		0478751D17DF6B77004D083E = {
 			isa = PBXGroup;
 			children = (
+				04C6050A17E523CC00BC4B04 /* Image.cpp */,
+				04C6050B17E523CC00BC4B04 /* Image.h */,
 				04C75E0617E39B09007D4C7C /* FileUtils.cpp */,
 				04C75E0717E39B09007D4C7C /* FileUtils.h */,
 				04C75E0517E399EC007D4C7C /* Includes.h */,
@@ -632,6 +643,7 @@
 		0478753417DF6C6B004D083E /* libs */ = {
 			isa = PBXGroup;
 			children = (
+				04C6050717E5239200BC4B04 /* stb */,
 				049B36BE17E0BBD60074BE1F /* glew */,
 				04C6C66A17E0AC8900592AE9 /* glfw */,
 				045B310D17E0212E005BC291 /* glm */,
@@ -660,6 +672,7 @@
 		0478755017E00549004D083E /* Textures */ = {
 			isa = PBXGroup;
 			children = (
+				04C6050D17E5270E00BC4B04 /* tile.png */,
 				0478755117E00554004D083E /* tile.tga */,
 			);
 			name = Textures;
@@ -683,6 +696,16 @@
 				049B36C217E0BBD60074BE1F /* wglew.h */,
 			);
 			path = GL;
+			sourceTree = "<group>";
+		};
+		04C6050717E5239200BC4B04 /* stb */ = {
+			isa = PBXGroup;
+			children = (
+				04C6050817E5239200BC4B04 /* stb_image.c */,
+				04C6050917E5239200BC4B04 /* stb_image.h */,
+			);
+			name = stb;
+			path = GLFWTest/libs/stb;
 			sourceTree = "<group>";
 		};
 		04C6C66A17E0AC8900592AE9 /* glfw */ = {
@@ -752,6 +775,8 @@
 				04CB72F417E231A100602484 /* ShaderCache.cpp in Sources */,
 				04C75E0417E3998B007D4C7C /* Camera.cpp in Sources */,
 				04C75E0817E39B09007D4C7C /* FileUtils.cpp in Sources */,
+				04C6050F17E5273800BC4B04 /* stb_image.c in Sources */,
+				04C6050C17E523CC00BC4B04 /* Image.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

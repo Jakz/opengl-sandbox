@@ -12,6 +12,96 @@
 
 using namespace std;
 
+GLint Program::attrib(const GLchar* attribName) const {
+  GLint attrib = glGetAttribLocation(ident, attribName);
+  return attrib;
+}
+
+GLint Program::uniform(const GLchar* uniformName) const {
+  GLint uniform = glGetUniformLocation(ident, uniformName);
+  return uniform;
+}
+
+
+#define _SHADER_ATTRIB_UNIFORM_SETTERS_IMPL(OGL_TYPE, TYPE_PREFIX, TYPE_SUFFIX) \
+\
+void Program::setAttrib(const GLchar* name, OGL_TYPE v0) \
+{ glVertexAttrib ## TYPE_PREFIX ## 1 ## TYPE_SUFFIX (attrib(name), v0); } \
+void Program::setAttrib(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1) \
+{ glVertexAttrib ## TYPE_PREFIX ## 2 ## TYPE_SUFFIX (attrib(name), v0, v1); } \
+void Program::setAttrib(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2) \
+{ glVertexAttrib ## TYPE_PREFIX ## 3 ## TYPE_SUFFIX (attrib(name), v0, v1, v2); } \
+void Program::setAttrib(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3) \
+{  glVertexAttrib ## TYPE_PREFIX ## 4 ## TYPE_SUFFIX (attrib(name), v0, v1, v2, v3); } \
+\
+void Program::setAttrib1v(const GLchar* name, const OGL_TYPE* v) \
+{ glVertexAttrib ## TYPE_PREFIX ## 1 ## TYPE_SUFFIX ## v (attrib(name), v); } \
+void Program::setAttrib2v(const GLchar* name, const OGL_TYPE* v) \
+{ glVertexAttrib ## TYPE_PREFIX ## 2 ## TYPE_SUFFIX ## v (attrib(name), v); } \
+void Program::setAttrib3v(const GLchar* name, const OGL_TYPE* v) \
+{ glVertexAttrib ## TYPE_PREFIX ## 3 ## TYPE_SUFFIX ## v (attrib(name), v); } \
+void Program::setAttrib4v(const GLchar* name, const OGL_TYPE* v) \
+{ glVertexAttrib ## TYPE_PREFIX ## 4 ## TYPE_SUFFIX ## v (attrib(name), v); } \
+\
+void Program::setUniform(const GLchar* name, OGL_TYPE v0) \
+{ glUniform1 ## TYPE_SUFFIX (uniform(name), v0); } \
+void Program::setUniform(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1) \
+{ glUniform2 ## TYPE_SUFFIX (uniform(name), v0, v1); } \
+void Program::setUniform(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2) \
+{ glUniform3 ## TYPE_SUFFIX (uniform(name), v0, v1, v2); } \
+void Program::setUniform(const GLchar* name, OGL_TYPE v0, OGL_TYPE v1, OGL_TYPE v2, OGL_TYPE v3) \
+{ glUniform4 ## TYPE_SUFFIX (uniform(name), v0, v1, v2, v3); } \
+\
+void Program::setUniform1v(const GLchar* name, const OGL_TYPE* v, GLsizei count) \
+{ glUniform1 ## TYPE_SUFFIX ## v (uniform(name), count, v); } \
+void Program::setUniform2v(const GLchar* name, const OGL_TYPE* v, GLsizei count) \
+{ glUniform2 ## TYPE_SUFFIX ## v (uniform(name), count, v); } \
+void Program::setUniform3v(const GLchar* name, const OGL_TYPE* v, GLsizei count) \
+{ glUniform3 ## TYPE_SUFFIX ## v (uniform(name), count, v); } \
+void Program::setUniform4v(const GLchar* name, const OGL_TYPE* v, GLsizei count) \
+{ glUniform4 ## TYPE_SUFFIX ## v (uniform(name), count, v); }
+
+_SHADER_ATTRIB_UNIFORM_SETTERS_IMPL(GLfloat, , f);
+_SHADER_ATTRIB_UNIFORM_SETTERS_IMPL(GLdouble, , d);
+_SHADER_ATTRIB_UNIFORM_SETTERS_IMPL(GLint, I, i);
+_SHADER_ATTRIB_UNIFORM_SETTERS_IMPL(GLuint, I, ui);
+
+void Program::setUniformMatrix2(const GLchar* name, const GLfloat* v, GLsizei count, GLboolean transpose) {
+  glUniformMatrix2fv(uniform(name), count, transpose, v);
+}
+
+void Program::setUniformMatrix3(const GLchar* name, const GLfloat* v, GLsizei count, GLboolean transpose) {
+  glUniformMatrix3fv(uniform(name), count, transpose, v);
+}
+
+void Program::setUniformMatrix4(const GLchar* name, const GLfloat* v, GLsizei count, GLboolean transpose) {
+  glUniformMatrix4fv(uniform(name), count, transpose, v);
+}
+
+void Program::setUniform(const GLchar* name, const glm::mat2& m, GLboolean transpose) {
+  glUniformMatrix2fv(uniform(name), 1, transpose, &m[0][0]);
+}
+
+void Program::setUniform(const GLchar* name, const glm::mat3& m, GLboolean transpose) {
+  glUniformMatrix3fv(uniform(name), 1, transpose, &m[0][0]);
+}
+
+void Program::setUniform(const GLchar* name, const glm::mat4& m, GLboolean transpose) {
+  glUniformMatrix4fv(uniform(name), 1, transpose, &m[0][0]);
+}
+
+void Program::setUniform(const GLchar* uniformName, const glm::vec3& v) {
+  setUniform3v(uniformName, &v[0]);
+}
+
+void Program::setUniform(const GLchar* uniformName, const glm::vec4& v) {
+  setUniform4v(uniformName, &v[0]);
+}
+
+
+
+
+
 vector<Shader*> ShaderCache::shaders;
 vector<Program*> ShaderCache::programs;
 

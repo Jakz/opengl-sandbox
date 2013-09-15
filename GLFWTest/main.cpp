@@ -13,6 +13,9 @@
 #include "FileUtils.h"
 #include "ShaderCache.h"
 #include "Camera.h"
+
+#include "Image.h"
+
 #include <iostream>
 
 
@@ -51,6 +54,9 @@ struct Data
   GLint vmatrixLoc;
   GLint mmatrixLoc;
   
+  Image *image;
+  Texture *texture;
+  
   float timer;
   
 } data;
@@ -67,23 +73,52 @@ static GLuint createBuffer(GLenum kind, const void *data, GLsizei size)
 }
 
 static const GLfloat vertexData[] = {
-  -0.5f, -0.5f, -0.0f, 1.0f,
-  0.5f, -0.5f, -0.0f, 1.0f,
-  -0.5f, 0.5f, -0.0f, 1.0f,
-  0.5f, 0.5f, -0.0f, 1.0f
+  -0.5f, -0.5f, -0.5f, 1.0f,
+  0.5f, -0.5f, -0.5f, 1.0f,
+  -0.5f, 0.5f, -0.5f, 1.0f,
+  0.5f, 0.5f, -0.5f, 1.0f,
+  -0.5f, -0.5f, 0.5f, 1.0f,
+  0.5f, -0.5f, 0.5f, 1.0f,
+  -0.5f, 0.5f, 0.5f, 1.0f,
+  0.5f, 0.5f, 0.5f, 1.0f
 };
 
 static const GLfloat colorData[] = {
-  1.0f, 0.0f, 0.0f, 1.0f,
-  1.0f, 1.0f, 0.0f, 1.0f,
-  1.0f, 0.0f, 1.0f, 1.0f,
-  0.0f, 1.0f, 0.0f, 1.0f
+  1.0f, 0.0f, 0.0f, 1.0f, // 0 red
+  1.0f, 1.0f, 0.0f, 1.0f, // 1 yellow
+  1.0f, 0.0f, 1.0f, 1.0f, // 2 magenta
+  0.0f, 1.0f, 0.0f, 1.0f, // 3 green
+  0.0f, 0.0f, 1.0f, 1.0f, // 4 blue
+  0.0f, 1.0f, 1.01, 1.0f, // 5 cyan
+  0.6f, 0.2f, 0.9f, 1.0f, // 6 gray
+  0.4f, 0.8f, 0.2f, 1.0f  // 7 black
 };
 
-static const GLushort bufferData[] = { 0,1,2,3};
+static const GLfloat textureData[] = {
+  0.0f, 0.0f,
+  1.0f, 0.0f,
+  0.0f, 1.0f,
+  1.0f, 1.0f,
+  0.0f, 0.0f,
+  1.0f, 0.0f,
+  1.0f, 1.0f,
+  0.0f, 1.0f,
+};
+
+static const GLushort bufferData[] = {
+  0,1,2,1,2,3,
+  0,5,4,0,1,5,
+  2,3,6,3,6,7,
+  3,5,7,3,5,1,
+  4,6,0,2,6,0,
+  4,5,6,5,6,7
+};
 
 static void allocateResources()
 {
+  data.image = new Image("tile.png");
+  data.texture = Texture::generate(data.image);
+  
   Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");
   Shader *fragment = ShaderCache::compileFragmentShader("shader.f.glsl");
   
@@ -112,6 +147,14 @@ static void allocateResources()
   glBufferData(GL_ARRAY_BUFFER, sizeof(colorData), colorData, GL_STATIC_DRAW);
   glEnableVertexAttribArray(data.color);
   glVertexAttribPointer(data.color, 4, GL_FLOAT, GL_FALSE, 0, (void*)0);
+  
+  GLuint texCoords = data.program->attrib("a_texCoord");
+  GLuint texCoordsP;
+  glGenBuffers(1, &texCoordsP);
+  glBindBuffer(GL_ARRAY_BUFFER, texCoordsP);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(textureData), textureData, GL_STATIC_DRAW);
+  glEnableVertexAttribArray(texCoords);
+  glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 0, (void*)0);
   
   glGenBuffers(1, &data.elementBuffer);
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, data.elementBuffer);
@@ -197,7 +240,7 @@ int main(int argc, const char * argv[])
   glm::vec3 normal = - glm::normalize(glm::cross(t2, t1));
   glm::vec4 pts[] = {glm::vec4(glm::vec3(0.0f), 1.0f), glm::vec4(normal*0.5f, 1.0f)};
   
-  GLuint vao2;
+  /*GLuint vao2;
   GLuint bfs[3];
   glGenVertexArrays(1, &vao2);
   glBindVertexArray(vao2);
@@ -220,7 +263,7 @@ int main(int argc, const char * argv[])
   glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, bfs[2]);
   glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(iii), iii, GL_STATIC_DRAW);
   
-  glBindVertexArray(0);
+  glBindVertexArray(0);*/
   
 
   //glm::mat4 pvMatrix = projectionMatrix * viewMatrix;
@@ -232,7 +275,7 @@ int main(int argc, const char * argv[])
   {
     data.timer = glfwGetTime();
     
-    modelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
+    modelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,0.0));
     
     float ratio;
     int width, height;
@@ -250,13 +293,20 @@ int main(int argc, const char * argv[])
     glUniformMatrix4fv(data.vmatrixLoc, 1, GL_FALSE, &camera->cameraMatrix()[0][0]);
     glUniformMatrix4fv(data.mmatrixLoc, 1, GL_FALSE, &modelMatrix[0][0]);
     
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, data.texture->ident);
+    data.program->setUniform("tex", 0);
+    
     glBindVertexArray(data.vao);
-    glDrawElements(GL_TRIANGLE_STRIP, 4, GL_UNSIGNED_SHORT, (void*)0);
+    glDrawElements(GL_TRIANGLES, 8/*sizeof(bufferData)/sizeof(bufferData[0])*/, GL_UNSIGNED_SHORT, (void*)0);
+    glBindVertexArray(0);
     
-    glBindVertexArray(vao2);
-    glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, (void*)0);
-
-    
+    //GLenum error = glGetError();
+    //const u8 *errors = gluErrorString(error);
+    /*glBindVertexArray(vao2);
+    glDrawElements(GL_LINES, 2, GL_UNSIGNED_SHORT, (void*)0);*/
+    //error = glGetError();
+    //errors = gluErrorString(error);
     
     glfwSwapBuffers(window);
     glfwPollEvents();
