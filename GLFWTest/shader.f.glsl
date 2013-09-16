@@ -24,10 +24,11 @@ void main() {
   mat4 mvMatrix = vMatrix*mMatrix;
   
   vec3 lightColor = vec3(0.9, 0.9, 0.6);
+  vec3 lightPosition = vec3(mvMatrix * vec4(0,0,3,1));
   
   vec3 surfacePos = vec3(mMatrix * vec4(v_position, 1.0f));
   vec4 surfaceColor = texture(tex, v_texCoord);
-  vec3 surfaceToLight = normalize(vec3(0,-2,-3) - surfacePos);
+  vec3 surfaceToLight = normalize(lightPosition - surfacePos);
   float diffuseCoefficient = max(0.0, dot(v_normal, surfaceToLight));
   
   fragColor = vec4(diffuseCoefficient * surfaceColor.rgb * lightColor, 1);
