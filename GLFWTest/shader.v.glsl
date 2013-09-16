@@ -26,8 +26,8 @@ out vec3 v_normal;
 void main()
 {
   mat4 mvMatrix = vMatrix * mMatrix;
-  
-  v_normal = normalize(transpose(inverse(mat3(mMatrix))) * a_normal);
+
+  v_normal = normalize(transpose(inverse(mat3(mvMatrix))) * a_normal);
   
   v_color = a_color;
   v_texCoord = a_texCoord;
