@@ -100,8 +100,8 @@ void Program::setUniform(const GLuint ident, const glm::vec4& v) {
 
 
 
-vector<Shader*> ShaderCache::shaders;
-vector<Program*> ShaderCache::programs;
+//vector<Shader*> ShaderCache::shaders;
+//vector<Program*> ShaderCache::programs;
 
 unordered_map<string, Shader*> ShaderCache::mshaders;
 unordered_map<string, Program*> ShaderCache::mprograms;
@@ -237,4 +237,14 @@ bool ShaderCache::linkProgram(Program *program)
   
   // TODO add to collection
   return true;
+}
+
+void ShaderCache::compileAndLink(std::string name, const char *vertexFileName, const char *fragmentFileName)
+{
+  Shader *vertex = compileVertexShader(vertexFileName);
+  Shader *fragment = compileFragmentShader(fragmentFileName);
+  
+  Program *program = linkProgram(vertex, fragment);
+  
+  mapProgram(name, program);
 }

@@ -111,16 +111,21 @@ class Program
     void setUniform(const GLuint ident, const glm::mat4& m, GLboolean transpose=GL_FALSE);
     void setUniform(const GLuint ident, const glm::vec3& v);
     void setUniform(const GLuint ident, const glm::vec4& v);
+  
+    template <typename T>
+    void setUniform(const LocationUniform location, const T& t) {
+      setUniform(uniforms[location], t);
+    }
 };
 
 
 class ShaderCache
 {
   private:
-    static std::vector<Shader*> shaders;
+    //static std::vector<Shader*> shaders;
     static std::unordered_map<std::string, Shader*> mshaders;
   
-    static std::vector<Program*> programs;
+    //static std::vector<Program*> programs;
     static std::unordered_map<std::string, Program*> mprograms;
   
     static void showErrorLog(GLuint object, PFNGLGETSHADERIVPROC glGet__iv, PFNGLGETSHADERINFOLOGPROC glGet__InfoLog);
@@ -138,6 +143,11 @@ class ShaderCache
   
     static Program *prelinkProgram(Shader *vertex, Shader *fragment);
     static bool linkProgram(Program *program);
+  
+    static void mapProgram(std::string name, Program *program) { mprograms[name] = program; }
+    static Program *program(std::string name) { std::unordered_map<std::string, Program*>::iterator it = mprograms.find(name); return it != mprograms.end() ? it->second : nullptr; }
+  
+    static void compileAndLink(std::string name, const char *vertexFileName, const char *fragmentFileName);
 };
 
 

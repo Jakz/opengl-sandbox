@@ -8,7 +8,7 @@ uniform mat4 mMatrix;
 
 uniform mat4 normalMatrix;
 
-in vec3 normal;
+in vec3 a_normal;
 
 in vec4 a_position;
 in vec4 a_color;
@@ -18,12 +18,16 @@ in float a_shine;
 in vec4 a_specular;
 
 out vec4 v_color;
-out vec3 v_position;
 out vec2 v_texCoord;
+
+out vec3 v_position;
+out vec3 v_normal;
 
 void main()
 {
   mat4 mvMatrix = vMatrix * mMatrix;
+  
+  v_normal = normalize(transpose(inverse(mat3(mMatrix))) * a_normal);
   
   v_color = a_color;
   v_texCoord = a_texCoord;
