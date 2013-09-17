@@ -147,7 +147,7 @@ static void allocateResources()
   
   std::vector<glm::vec4> lvertices;
   
-  InstanceLines* lines = new InstanceLines(GL_LINES, ShaderCache::program("position_color"));
+  ObjectLines* lines = new ObjectLines(GL_LINES, ShaderCache::program("position_color"));
   //lines->translate(0.0f, 0.0f, -5.0f);
   for (int j = 0; j < 6; ++j)
   {

@@ -890,9 +890,6 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glew/1.9.0/lib,
-					"\"$(SRCROOT)/GLFWTest/libs/glfw\"",
-					"\"$(SRCROOT)/GLFWTest/libs/glew\"",
 					"\"$(SRCROOT)/libs/glfw\"",
 					"\"$(SRCROOT)/libs/glew\"",
 				);
@@ -906,9 +903,6 @@
 			buildSettings = {
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
-					/usr/local/Cellar/glew/1.9.0/lib,
-					"\"$(SRCROOT)/GLFWTest/libs/glfw\"",
-					"\"$(SRCROOT)/GLFWTest/libs/glew\"",
 					"\"$(SRCROOT)/libs/glfw\"",
 					"\"$(SRCROOT)/libs/glew\"",
 				);

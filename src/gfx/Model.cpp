@@ -29,13 +29,13 @@ void Renderer::render(AbstractObject *instance)
 
 
 
-InstanceLines::InstanceLines(GLenum type, Program *program) : AbstractObject(program), type(type) , modelMatrix(mat4(1.0f))
+ObjectLines::ObjectLines(GLenum type, Program *program) : AbstractObject(program), type(type) , modelMatrix(mat4(1.0f))
 {
   glGenVertexArrays(1, &vao);
   glGenBuffers(2, &vbo[0]);
 }
 
-void InstanceLines::addVertices(glm::vec4 v1, glm::vec4 v2, glm::vec4 c1, glm::vec4 c2)
+void ObjectLines::addVertices(glm::vec4 v1, glm::vec4 v2, glm::vec4 c1, glm::vec4 c2)
 {
   vertices.push_back(v1);
   vertices.push_back(v2);
@@ -44,14 +44,14 @@ void InstanceLines::addVertices(glm::vec4 v1, glm::vec4 v2, glm::vec4 c1, glm::v
 }
 
 
-void InstanceLines::addVertex(glm::vec4 v, glm::vec4 c)
+void ObjectLines::addVertex(glm::vec4 v, glm::vec4 c)
 {
   vertices.push_back(v);
   colors.push_back(c);
 }
 
 
-void InstanceLines::mapBuffers()
+void ObjectLines::mapBuffers()
 {
   glBindVertexArray(vao);
   
@@ -70,7 +70,7 @@ void InstanceLines::mapBuffers()
   glBindVertexArray(0);
 }
 
-void InstanceLines::render()
+void ObjectLines::render()
 {
   //TODO: view and projection matrix should be altready set
   program->setUniform(UNIFORM_MATRIX_MODEL, modelMatrix);

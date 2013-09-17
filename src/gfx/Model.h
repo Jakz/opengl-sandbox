@@ -54,7 +54,7 @@ class AbstractObject
   friend class Renderer;
 };
 
-class InstanceLines : public AbstractObject
+class ObjectLines : public AbstractObject
 {
   private:
     std::vector<glm::vec4> vertices;
@@ -67,7 +67,7 @@ class InstanceLines : public AbstractObject
     GLuint vbo[2];
   
   public:
-    InstanceLines(GLenum type, Program *program);
+    ObjectLines(GLenum type, Program *program);
   
     void addVertices(glm::vec4 v1, glm::vec4 v2, glm::vec4 c1, glm::vec4 c2);
     void addVertex(glm::vec4 v, glm::vec4 c);
