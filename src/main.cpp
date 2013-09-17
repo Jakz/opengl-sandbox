@@ -259,7 +259,8 @@ int main(int argc, const char * argv[])
   glm::mat4 modelMatrix;
 
   renderer->camera()->setProjection(50.0f, 800.0f/600.0f, 0.1, 100.0f);
-  renderer->camera()->lookAt(glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f), glm::vec3(0,1,0));
+  renderer->camera()->translate(glm::vec3(0.0f,0.0f,3.0f));
+  //renderer->camera()->lookAt(glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f), glm::vec3(0,1,0));
   
   
   glm::vec3 v1 = glm::vec3(-0.5f, -0.5f, -0.0f);
@@ -390,6 +391,24 @@ int main(int argc, const char * argv[])
     {
       glm::vec3 right = renderer->camera()->directionRight();
       renderer->camera()->translate(right*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
+    {
+      glm::vec3 up = renderer->camera()->directionUp();
+      renderer->camera()->translate(up*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
+    {
+      glm::vec3 up = renderer->camera()->directionUp();
+      renderer->camera()->translate(-up*0.03f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+    {
+      renderer->camera()->rotate(0, -1.0f);
+    }
+    if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
+    {
+      renderer->camera()->rotate(0, 1.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {

@@ -29,7 +29,7 @@ class Camera
     void adjustRatio(float ratio);
   
     const glm::mat4 projectionMatrix() { return projection; }
-    const glm::mat4 cameraMatrix() { return camera; }
+    const glm::mat4 cameraMatrix();
   
     void lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up);
   

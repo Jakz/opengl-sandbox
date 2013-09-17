@@ -29,8 +29,11 @@ void Camera::adjustRatio(float ratio)
 
 void Camera::translate(glm::vec3 delta)
 {
-  position -= delta;
-  camera = glm::translate(camera, -delta);
+  position += delta;
+  std::cout << position.x << ", " << position.y << ", " << position.z << std::endl;
+  /*camera = glm::rotate(glm::mat4(), angleHor, glm::vec3(0,1,0));
+  camera = glm::rotate(camera, angleVer, glm::vec3(1,0,0));
+  camera = glm::translate(camera, position);*/
 }
 
 void Camera::rotate(float horizontal, float vertical)
@@ -38,20 +41,17 @@ void Camera::rotate(float horizontal, float vertical)
   angleHor += horizontal;
   angleVer += vertical;
   
-  if (angleHor > 360.0f) angleHor -= 360.0f;
-  if (angleHor < 0.0f) angleHor += 360.0f;
+  if (angleHor >= 360.0f) angleHor -= 360.0f;
+  if (angleHor <= 0.0f) angleHor += 360.0f;
   
-  if (angleVer > 360.0f) angleVer -= 360.0f;
-  if (angleVer < 0.0f) angleVer += 360.0f;
+  if (angleVer >= 360.0f) angleVer -= 360.0f;
+  if (angleVer <= 0.0f) angleVer += 360.0f;
   
-  std::cout << angleHor << ", " << angleVer << std::endl;
-  
-  //camera = glm::translate(glm::mat4(), position);
-  camera = glm::rotate(camera, horizontal, glm::vec3(0,1,0));
-  camera = glm::rotate(camera, vertical, glm::vec3(1,0,0));
-  
-  
-  
+  //std::cout << angleHor << ", " << angleVer << std::endl;
+  /*camera = glm::translate(glm::mat4(), position);
+  camera = glm::rotate(camera, angleHor, glm::vec3(0,1,0));
+  camera = glm::rotate(camera, angleVer, glm::vec3(1,0,0));*/
+
   
   //camera = glm::rotate(camera, horizontal, glm::vec3(0,1,0));
   //camera = glm::rotate(camera, vertical, glm::vec3(1,0,0));
@@ -61,4 +61,12 @@ void Camera::lookAt(glm::vec3 position, glm::vec3 target, glm::vec3 up)
 {
   this->position = position;
   camera = glm::lookAt(position, target, up);
+}
+
+const glm::mat4 Camera::cameraMatrix()
+{
+  camera = glm::rotate(glm::mat4(), angleHor, glm::vec3(0,1,0));
+  camera = glm::rotate(camera, angleVer, glm::vec3(1,0,0));
+  camera = glm::translate(camera, -position);
+  return camera;
 }
