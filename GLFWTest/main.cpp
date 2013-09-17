@@ -88,7 +88,7 @@ using namespace glm;
 
 static void allocateResources()
 {
-  data.image = new Image("tile.png");
+  data.image = new Image("tiles.png");
   data.texture = Texture::generate(data.image, GL_NEAREST);
   
   Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");

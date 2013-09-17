@@ -31,6 +31,7 @@
 		04C75E0417E3998B007D4C7C /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0217E3998B007D4C7C /* Camera.cpp */; };
 		04C75E0817E39B09007D4C7C /* FileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04C75E0617E39B09007D4C7C /* FileUtils.cpp */; };
 		04CB72F417E231A100602484 /* ShaderCache.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 04CB72F217E231A100602484 /* ShaderCache.cpp */; };
+		04F304E717E7D6110083C10E /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F304E617E7D5C40083C10E /* tiles.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -53,6 +54,7 @@
 				0495224817E76753008ABB6F /* position_color.f.glsl in CopyFiles */,
 				0495224917E76753008ABB6F /* position_color.v.glsl in CopyFiles */,
 				04C6050E17E5271D00BC4B04 /* tile.png in CopyFiles */,
+				04F304E717E7D6110083C10E /* tiles.png in CopyFiles */,
 				045654F117E3E6AA00765B9A /* libglfw3.a in CopyFiles */,
 				045654F017E3E6A500765B9A /* libGLEW.a in CopyFiles */,
 				0478754C17DF8ACD004D083E /* shader.v.glsl in CopyFiles */,
@@ -326,6 +328,7 @@
 		04C75E0717E39B09007D4C7C /* FileUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileUtils.h; sourceTree = "<group>"; };
 		04CB72F217E231A100602484 /* ShaderCache.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ShaderCache.cpp; sourceTree = "<group>"; };
 		04CB72F317E231A100602484 /* ShaderCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ShaderCache.h; sourceTree = "<group>"; };
+		04F304E617E7D5C40083C10E /* tiles.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = tiles.png; path = GLFWTest/data/gfx/tiles.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -687,6 +690,7 @@
 			isa = PBXGroup;
 			children = (
 				0495224217E72271008ABB6F /* console_font.png */,
+				04F304E617E7D5C40083C10E /* tiles.png */,
 				04C6050D17E5270E00BC4B04 /* tile.png */,
 				0478755117E00554004D083E /* tile.tga */,
 			);
