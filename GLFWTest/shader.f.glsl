@@ -24,7 +24,7 @@ void main() {
   mat4 mvMatrix = vMatrix*mMatrix;
   
   vec3 lightColor = vec3(1.0f,1.0f,1.0f);
-  vec3 lightPosition = vec3(mvMatrix * vec4(0,0,3,1));
+  vec3 lightPosition = vec3(0,0,-4);
   
   vec3 surfacePos = vec3(mMatrix * vec4(v_position, 1.0f));
   vec4 surfaceColor = texture(tex, v_texCoord/4.0 + vec2(0.0,0.25));
@@ -35,7 +35,11 @@ void main() {
   vec3 reflectionVector = reflect(incidenceVector, v_normal);
   vec3 surfaceToCamera = normalize(vec3(0,0,1) - surfacePos);
   float cosAngle = max(0.0, dot(surfaceToCamera, reflectionVector));
-  float specularCoefficient = pow(cosAngle, 0.4);
+  float specularCoefficient = 0.0f;
+  
+  //if (diffuseCoefficient > 0.0)
+    pow(cosAngle, 0.4);
+  
   
   vec3 specularComponent = specularCoefficient*vec3(0.9,0.9,1.0);
   

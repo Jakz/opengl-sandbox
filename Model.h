@@ -33,6 +33,7 @@ class Renderer
     Camera *camera() const { return cam; }
   
     void addInstance(Instance* instance) { instances.push_back(instance); }
+    Instance *instanceAt(u32 index) { return instances[0]; }
   
     void render();
 };
@@ -47,6 +48,8 @@ class Instance
   
     virtual void mapBuffers() = 0;
     virtual void render() = 0;
+  
+    virtual void setModelMatrix(glm::mat4 &m) = 0;
   
   friend class Renderer;
 };
@@ -74,6 +77,8 @@ class InstanceLines : public Instance
     void render() override;
   
     void translate(const GLfloat x, const GLfloat y, const GLfloat z) { glm::translate(modelMatrix, glm::vec3(x,y,z)); }
+  
+    void setModelMatrix(glm::mat4 &m) override { modelMatrix = m; }
   
   friend class Renderer;
   

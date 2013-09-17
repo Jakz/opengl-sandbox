@@ -248,3 +248,10 @@ void ShaderCache::compileAndLink(std::string name, const char *vertexFileName, c
   
   mapProgram(name, program);
 }
+
+
+
+
+glm::vec4 Colors::RED = glm::vec4(1.0f,0.0f,0.0f,1.0f);
+glm::vec4 Colors::GREEN = glm::vec4(0.0f,1.0f,0.0f,1.0f);
+glm::vec4 Colors::BLUE = glm::vec4(0.0f,0.0f,1.0f,1.0f);

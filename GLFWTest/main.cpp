@@ -103,11 +103,6 @@ static void allocateResources()
   program->enableAttrib("a_position", ATTRIB_POSITION);
   program->enableAttrib("a_color", ATTRIB_COLOR);
   
-  InstanceLines* lines = new InstanceLines(GL_LINES, ShaderCache::program("position_color"));
-  lines->translate(0.0f, 0.0f, -5.0f);
-  lines->addVertices(glm::vec4(-0.5f,0.0f,-0.5f,1.0f), glm::vec4(0.5f,0.0f,-0.5f,1.0f), glm::vec4(1.0f,0.0f,0.0f,1.0f), glm::vec4(0.0f,0.0f,1.0f,1.0f));
-  lines->mapBuffers();
-  renderer->addInstance(lines);
   
   
   data.program = ShaderCache::linkProgram(vertex, fragment);
@@ -122,9 +117,6 @@ static void allocateResources()
   data.program->enableUniform("vMatrix", UNIFORM_MATRIX_VIEW);
   data.program->enableUniform("mMatrix", UNIFORM_MATRIX_MODEL);
   data.program->enableUniform("tex", UNIFORM_TEXTURE);
-
-  glGenVertexArrays(1, &data.vao);
-  glBindVertexArray(data.vao);
   
   std::vector<glm::vec4> vertices;
   std::vector<glm::vec2> texCoords;
@@ -153,16 +145,30 @@ static void allocateResources()
     rotate(mat4(), 270.0f, vec3(1.0f,0.0f,0.0f))
   };
   
+  std::vector<glm::vec4> lvertices;
+  
+  InstanceLines* lines = new InstanceLines(GL_LINES, ShaderCache::program("position_color"));
+  //lines->translate(0.0f, 0.0f, -5.0f);
   for (int j = 0; j < 6; ++j)
   {
     for (int i = 0; i < 6; ++i)
     {
       vertices.push_back(rotations[j]*face[i]);
       texCoords.push_back(coords[i]);
-      normals.push_back(vec3(rotations[j]*vec4(normal,1.0f)));
+      normals.push_back(vec3(rotations[j]*vec4(0.0f,0.0f,1.0f,1.0f)));
+    }
+    
+    //if (j == 2)
+    {
+      vec4 s = vec4(0.0f,0.0f,face[0][2],1.0f);
+      lines->addVertices(rotations[j]*s, rotations[j]*(vec4(normal+vec3(s),1)), Colors::RED, Colors::GREEN);
     }
   }
+  lines->mapBuffers();
+  renderer->addInstance(lines);
   
+  glGenVertexArrays(1, &data.vao);
+  glBindVertexArray(data.vao);
   glGenBuffers(1, &data.vertexBuffer);
   glBindBuffer(GL_ARRAY_BUFFER, data.vertexBuffer);
   glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(vec4), &vertices[0], GL_STATIC_DRAW);
@@ -250,7 +256,7 @@ int main(int argc, const char * argv[])
   glEnable(GL_BLEND);
   glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
   
-  glm::mat4 modelMatrix, baseModelMatrix;
+  glm::mat4 modelMatrix;
 
   renderer->camera()->setProjection(50.0f, 800.0f/600.0f, 0.1, 100.0f);
   renderer->camera()->lookAt(glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f), glm::vec3(0,1,0));
@@ -307,11 +313,14 @@ int main(int argc, const char * argv[])
   {
     data.timer = glfwGetTime();
     
-    baseModelMatrix = glm::rotate(glm::translate(glm::scale(glm::mat4(1.0f),glm::vec3(0.5f,0.5f,0.5f)), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
+    modelMatrix = glm::rotate(glm::translate(glm::scale(glm::mat4(1.0f),glm::vec3(0.5f,0.5f,0.5f)), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
+    glm::mat4 lmodelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
 
+    
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    //renderer->render();
+    renderer->instanceAt(0)->setModelMatrix(modelMatrix);
+    renderer->render();
     
     data.program->use();
     
@@ -324,17 +333,7 @@ int main(int argc, const char * argv[])
     data.program->setUniform(data.program->uniform(UNIFORM_TEXTURE), 0);
     
     glBindVertexArray(data.vao);
-    modelMatrix = baseModelMatrix;
     data.program->setUniform<glm::mat4>(UNIFORM_MATRIX_MODEL, modelMatrix);
-    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (void*)0);
-    
-    modelMatrix = glm::rotate(baseModelMatrix, 90.0f, glm::vec3(0.0f,1.0f,0.0f));
-    data.program->setUniform<glm::mat4>(UNIFORM_MATRIX_MODEL, modelMatrix);
-    glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (void*)0);
-
-    modelMatrix = glm::rotate(baseModelMatrix, 90.0f, glm::vec3(1.0f,0.0f,0.0f));
-    data.program->setUniform<glm::mat4>(UNIFORM_MATRIX_MODEL, modelMatrix);
-    
     glDrawArrays(GL_TRIANGLES, 0, 12*6);
     
     //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (void*)0);
@@ -392,6 +391,15 @@ int main(int argc, const char * argv[])
       glm::vec3 right = renderer->camera()->directionRight();
       renderer->camera()->translate(right*0.03f);
     }
+    if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
+    {
+      renderer->camera()->rotate(-1.0f, 0);
+    }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
+    {
+      renderer->camera()->rotate(1.0f, 0);
+    }
+    
   }
   
   glfwTerminate();

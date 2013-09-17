@@ -149,6 +149,12 @@ class ShaderCache
   
     static void compileAndLink(std::string name, const char *vertexFileName, const char *fragmentFileName);
 };
+  
+class Colors
+{
+  public:
+    static glm::vec4 RED, GREEN, BLUE;
+};
 
 
 #endif
