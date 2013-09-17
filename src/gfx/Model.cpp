@@ -13,11 +13,11 @@ using namespace glm;
 
 void Renderer::render()
 {
-  for (vector<Instance*>::iterator it = instances.begin(); it != instances.end(); ++it)
+  for (vector<AbstractObject*>::iterator it = instances.begin(); it != instances.end(); ++it)
     render(*it);
 }
 
-void Renderer::render(Instance *instance)
+void Renderer::render(AbstractObject *instance)
 {
   Program *program = instance->program;
   
@@ -29,7 +29,7 @@ void Renderer::render(Instance *instance)
 
 
 
-InstanceLines::InstanceLines(GLenum type, Program *program) : Instance(program), type(type) , modelMatrix(mat4(1.0f))
+InstanceLines::InstanceLines(GLenum type, Program *program) : AbstractObject(program), type(type) , modelMatrix(mat4(1.0f))
 {
   glGenVertexArrays(1, &vao);
   glGenBuffers(2, &vbo[0]);

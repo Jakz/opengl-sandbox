@@ -16,35 +16,35 @@
 
 #include <vector>
 
-class Instance;
+class AbstractObject;
 
 class Renderer
 {
   private:
     Camera *cam;
   
-    std::vector<Instance*> instances;
+    std::vector<AbstractObject*> instances;
   
-    void render(Instance *instance);
+    void render(AbstractObject *instance);
   
   public:
     Renderer() : cam(new Camera()) { }
   
     Camera *camera() const { return cam; }
   
-    void addInstance(Instance* instance) { instances.push_back(instance); }
-    Instance *instanceAt(u32 index) { return instances[0]; }
+    void addInstance(AbstractObject* instance) { instances.push_back(instance); }
+    AbstractObject *instanceAt(u32 index) { return instances[0]; }
   
     void render();
 };
 
-class Instance
+class AbstractObject
 {
   protected:
     Program *program;
 
   public:
-    Instance(Program *program) : program(program) { }
+    AbstractObject(Program *program) : program(program) { }
   
     virtual void mapBuffers() = 0;
     virtual void render() = 0;
@@ -54,7 +54,7 @@ class Instance
   friend class Renderer;
 };
 
-class InstanceLines : public Instance
+class InstanceLines : public AbstractObject
 {
   private:
     std::vector<glm::vec4> vertices;
