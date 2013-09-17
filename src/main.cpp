@@ -47,7 +47,7 @@ struct Data
   Program* program;
   
   Image *image;
-  Texture *texture;
+  TextureTiled *texture;
   
   float timer;
   
@@ -89,7 +89,7 @@ using namespace glm;
 static void allocateResources()
 {
   data.image = new Image("tiles.png");
-  data.texture = Texture::generate(data.image, GL_NEAREST);
+  data.texture = TextureTiled::generate(data.image, 32, 32, GL_NEAREST);
   
   Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");
   Shader *fragment = ShaderCache::compileFragmentShader("shader.f.glsl");
@@ -97,11 +97,29 @@ static void allocateResources()
   ShaderCache::compileAndLink("position_color", "position_color.v.glsl", "position_color.f.glsl");
   
   Program *program = ShaderCache::program("position_color");
-  program->enableUniform("pMatrix", UNIFORM_MATRIX_PROJECTION);
-  program->enableUniform("vMatrix", UNIFORM_MATRIX_VIEW);
-  program->enableUniform("mMatrix", UNIFORM_MATRIX_MODEL);
+  program->enableUniformMatrices("pMatrix", "vMatrix", "mMatrix");
   program->enableAttrib("a_position", ATTRIB_POSITION);
   program->enableAttrib("a_color", ATTRIB_COLOR);
+  
+  ShaderCache::compileAndLink("tiled_surface", "tiled_surface.v.glsl", "tiled_surface.f.glsl");
+
+  Program *program2 = ShaderCache::program("tiled_surface");
+  program2->enableUniformMatrices("pMatrix", "vMatrix", "mMatrix");
+  program2->enableUniform("tex", UNIFORM_TEXTURE);
+  program2->enableAttrib("a_position", ATTRIB_POSITION);
+  program2->enableAttrib("a_texCoord", ATTRIB_TEX_COORDS);
+  
+  ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, data.texture, vec2(0.0f,0.25f));
+  wall->mapBuffers();
+  renderer->addInstance(wall);
+  
+  ObjectTiledSurface *wall3 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(3,2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f));
+  wall3->mapBuffers();
+  renderer->addInstance(wall3);
+  
+  ObjectTiledSurface *wall2 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,-2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.0f));
+  wall2->mapBuffers();
+  renderer->addInstance(wall2);
   
   
   
@@ -147,7 +165,7 @@ static void allocateResources()
   
   std::vector<glm::vec4> lvertices;
   
-  ObjectLines* lines = new ObjectLines(GL_LINES, ShaderCache::program("position_color"));
+  /*ObjectLines* lines = new ObjectLines(GL_LINES, ShaderCache::program("position_color"));
   //lines->translate(0.0f, 0.0f, -5.0f);
   for (int j = 0; j < 6; ++j)
   {
@@ -165,7 +183,7 @@ static void allocateResources()
     }
   }
   lines->mapBuffers();
-  renderer->addInstance(lines);
+  renderer->addInstance(lines);*/
   
   glGenVertexArrays(1, &data.vao);
   glBindVertexArray(data.vao);
@@ -320,10 +338,10 @@ int main(int argc, const char * argv[])
     
     glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT);
     
-    renderer->instanceAt(0)->setModelMatrix(modelMatrix);
+    //renderer->instanceAt(0)->setModelMatrix(modelMatrix);
     renderer->render();
     
-    data.program->use();
+    /*data.program->use();
     
     data.program->setUniform<GLfloat>(UNIFORM_TIMER, data.timer);
     data.program->setUniform<glm::mat4>(UNIFORM_MATRIX_PROJECTION, renderer->camera()->projectionMatrix());
@@ -335,7 +353,7 @@ int main(int argc, const char * argv[])
     
     glBindVertexArray(data.vao);
     data.program->setUniform<glm::mat4>(UNIFORM_MATRIX_MODEL, modelMatrix);
-    glDrawArrays(GL_TRIANGLES, 0, 12*6);
+    glDrawArrays(GL_TRIANGLES, 0, 12*6);*/
     
     //glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_SHORT, (void*)0);
     
@@ -375,48 +393,48 @@ int main(int argc, const char * argv[])
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
     {
       glm::vec3 forward = renderer->camera()->directionForward();
-      renderer->camera()->translate(forward*0.03f);
+      renderer->camera()->translate(forward*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
     {
       glm::vec3 forward = renderer->camera()->directionForward();
-      renderer->camera()->translate(-forward*0.03f);
+      renderer->camera()->translate(-forward*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
     {
       glm::vec3 right = renderer->camera()->directionRight();
-      renderer->camera()->translate(-right*0.03f);
+      renderer->camera()->translate(-right*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
     {
       glm::vec3 right = renderer->camera()->directionRight();
-      renderer->camera()->translate(right*0.03f);
+      renderer->camera()->translate(right*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS)
     {
       glm::vec3 up = renderer->camera()->directionUp();
-      renderer->camera()->translate(up*0.03f);
+      renderer->camera()->translate(up*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS)
     {
       glm::vec3 up = renderer->camera()->directionUp();
-      renderer->camera()->translate(-up*0.03f);
+      renderer->camera()->translate(-up*0.06f);
     }
     if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
     {
-      renderer->camera()->rotate(0, -1.0f);
+      renderer->camera()->rotate(0, -2.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_G) == GLFW_PRESS)
     {
-      renderer->camera()->rotate(0, 1.0f);
+      renderer->camera()->rotate(0, 2.0f);
     }
     if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS)
     {
-      renderer->camera()->rotate(-1.0f, 0);
+      renderer->camera()->rotate(-2.0f, 0);
     }
     if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS)
     {
-      renderer->camera()->rotate(1.0f, 0);
+      renderer->camera()->rotate(2.0f, 0);
     }
     
   }

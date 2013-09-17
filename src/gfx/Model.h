@@ -85,20 +85,31 @@ class ObjectLines : public AbstractObject
   
 };
 
-/*class ObjectTiledSurface : public AbstractObject
+class ObjectTiledSurface : public AbstractObject
 {
   private:
     glm::mat4 modelMatrix;
     std::vector<glm::vec4> vertices;
+    std::vector<glm::vec2> texCoords;
     glm::vec3 normal;
   
     TextureTiled *texture;
 
     GLenum type;
   
-  public:
-    ObjectTiledSurface(GLenum type, Program *program);
+    GLuint vao;
+    GLuint vbo[3];
   
-};*/
+  public:
+  ObjectTiledSurface(GLenum type, Program *program, glm::ivec3 p1, glm::ivec3 p2, s32 quadSize, TextureTiled *texture, glm::vec2 tileBase);
+  
+    void mapBuffers() override;
+  
+    void render() override;
+  
+    void translate(const GLfloat x, const GLfloat y, const GLfloat z) { glm::translate(modelMatrix, glm::vec3(x,y,z)); }
+  
+    void setModelMatrix(glm::mat4 &m) override { modelMatrix = m; }
+};
 
 #endif

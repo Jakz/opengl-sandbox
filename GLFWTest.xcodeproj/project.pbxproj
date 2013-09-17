@@ -29,29 +29,24 @@
 		0468005817E8B550008492FA /* shader.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0468FF4717E8B486008492FA /* shader.f.glsl */; };
 		0468005917E8B550008492FA /* shader.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0468FF4817E8B486008492FA /* shader.v.glsl */; };
 		0468005A17E8B555008492FA /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0468FF4F17E8B48E008492FA /* tiles.png */; };
+		04E6EE2117E8F4820027583F /* tiled_surface.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0477D59B17E8D462008E6745 /* tiled_surface.f.glsl */; };
+		04E6EE2217E8F4830027583F /* tiled_surface.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0477D59C17E8D462008E6745 /* tiled_surface.v.glsl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
 		0478752417DF6B77004D083E /* CopyFiles */ = {
 			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = /usr/share/man/man1/;
-			dstSubfolderSpec = 0;
+			buildActionMask = 12;
+			dstPath = "";
+			dstSubfolderSpec = 16;
 			files = (
 				0468005A17E8B555008492FA /* tiles.png in CopyFiles */,
 				0468005617E8B550008492FA /* position_color.f.glsl in CopyFiles */,
 				0468005717E8B550008492FA /* position_color.v.glsl in CopyFiles */,
 				0468005817E8B550008492FA /* shader.f.glsl in CopyFiles */,
 				0468005917E8B550008492FA /* shader.v.glsl in CopyFiles */,
-			);
-			runOnlyForDeploymentPostprocessing = 1;
-		};
-		0478754B17DF8AC7004D083E /* CopyFiles */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 16;
-			files = (
+				04E6EE2117E8F4820027583F /* tiled_surface.f.glsl in CopyFiles */,
+				04E6EE2217E8F4830027583F /* tiled_surface.v.glsl in CopyFiles */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +308,8 @@
 		0468FFFD17E8B494008492FA /* matrix_operation.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = matrix_operation.hpp; sourceTree = "<group>"; };
 		0468FFFE17E8B494008492FA /* matrix_operation.inl */ = {isa = PBXFileReference; lastKnownFileType = text; path = matrix_operation.inl; sourceTree = "<group>"; };
 		0468FFFF17E8B494008492FA /* matrix_query.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = matrix_query.hpp; sourceTree = "<group>"; };
+		0477D59B17E8D462008E6745 /* tiled_surface.f.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tiled_surface.f.glsl; sourceTree = "<group>"; };
+		0477D59C17E8D462008E6745 /* tiled_surface.v.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = tiled_surface.v.glsl; sourceTree = "<group>"; };
 		0478752617DF6B77004D083E /* GLFWTest */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = GLFWTest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0478753517DF6CE8004D083E /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		0478753717DF6D10004D083E /* Quartz.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Quartz.framework; path = System/Library/Frameworks/Quartz.framework; sourceTree = SDKROOT; };
@@ -413,6 +410,8 @@
 				0468FF4617E8B486008492FA /* position_color.v.glsl */,
 				0468FF4717E8B486008492FA /* shader.f.glsl */,
 				0468FF4817E8B486008492FA /* shader.v.glsl */,
+				0477D59B17E8D462008E6745 /* tiled_surface.f.glsl */,
+				0477D59C17E8D462008E6745 /* tiled_surface.v.glsl */,
 			);
 			path = shaders;
 			sourceTree = "<group>";
@@ -769,7 +768,6 @@
 				0478752217DF6B77004D083E /* Sources */,
 				0478752317DF6B77004D083E /* Frameworks */,
 				0478752417DF6B77004D083E /* CopyFiles */,
-				0478754B17DF8AC7004D083E /* CopyFiles */,
 			);
 			buildRules = (
 			);

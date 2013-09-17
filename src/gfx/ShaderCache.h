@@ -55,7 +55,7 @@ class Program
     const GLuint ident;
   
     Program() : ident(0) { }
-    Program(const GLuint ident) : ident(ident) { }
+    Program(const GLuint ident) : attribs{-2}, uniforms{-2}, ident(ident) { }
   
     void use() { glUseProgram(ident); }
     void unuse() { glUseProgram(0); }
@@ -69,6 +69,13 @@ class Program
     void enableUniform(const GLchar *name, const LocationUniform location)
     {
       uniforms[location] = glGetUniformLocation(ident, name);
+    }
+  
+    void enableUniformMatrices(const GLchar *projectionMatrix, const GLchar *viewMatrix, const GLchar *modelMatrix)
+    {
+      uniforms[UNIFORM_MATRIX_PROJECTION] = glGetUniformLocation(ident, projectionMatrix);
+      uniforms[UNIFORM_MATRIX_VIEW] = glGetUniformLocation(ident, viewMatrix);
+      uniforms[UNIFORM_MATRIX_MODEL] = glGetUniformLocation(ident, modelMatrix);
     }
   
     GLint attrib(LocationAttrib location) const { return attribs[location]; }
