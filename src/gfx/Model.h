@@ -13,6 +13,7 @@
 
 #include "Camera.h"
 #include "ShaderCache.h"
+#include "Image.h"
 
 #include <vector>
 
@@ -83,5 +84,21 @@ class ObjectLines : public AbstractObject
   friend class Renderer;
   
 };
+
+/*class ObjectTiledSurface : public AbstractObject
+{
+  private:
+    glm::mat4 modelMatrix;
+    std::vector<glm::vec4> vertices;
+    glm::vec3 normal;
+  
+    TextureTiled *texture;
+
+    GLenum type;
+  
+  public:
+    ObjectTiledSurface(GLenum type, Program *program);
+  
+};*/
 
 #endif
