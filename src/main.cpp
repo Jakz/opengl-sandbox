@@ -108,6 +108,8 @@ static void allocateResources()
   program2->enableUniform("tex", UNIFORM_TEXTURE);
   program2->enableAttrib("a_position", ATTRIB_POSITION);
   program2->enableAttrib("a_texCoord", ATTRIB_TEX_COORDS);
+  program2->enableUniform("normal", UNIFORM_NORMAL);
+
   
   ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, data.texture, vec2(0.0f,0.25f));
   wall->mapBuffers();

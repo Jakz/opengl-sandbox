@@ -9,8 +9,11 @@ in vec4 a_position;
 
 out vec2 v_texCoord;
 
+out vec3 v_position;
+
 void main()
 {
   v_texCoord = a_texCoord;
-  gl_Position = pMatrix * vMatrix * mMatrix * vec4(a_position);
+  gl_Position = pMatrix * vMatrix * mMatrix * a_position;
+  v_position = vec3(mMatrix * a_position);
 }

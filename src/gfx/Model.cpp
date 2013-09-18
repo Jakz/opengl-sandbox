@@ -100,6 +100,7 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
     yDeltas = ivec3(0,0,1);
     xSteps = abs(p2.x - p1.x);
     ySteps = abs(p2.z - p1.z);
+    normal = vec3(0,1,0);
   }
   else
   {
@@ -109,6 +110,7 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
       yDeltas = ivec3(0,-1,0);
       xSteps = abs(p2.x - p1.x);
       ySteps = abs(p2.y - p1.y);
+      normal = vec3(0,0,1);
     }
     else
     {
@@ -116,6 +118,7 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
       yDeltas = ivec3(0,-1,0),
       xSteps = abs(p2.z - p1.z);
       ySteps = abs(p2.y - p1.y);
+      normal = vec3(-1,0,0);
     }
   }
   
@@ -189,6 +192,7 @@ void ObjectTiledSurface::mapBuffers()
 void ObjectTiledSurface::render()
 {
   program->setUniform(UNIFORM_MATRIX_MODEL, modelMatrix);
+  program->setUniform(UNIFORM_NORMAL, normal);
   glActiveTexture(GL_TEXTURE0);
   glBindTexture(GL_TEXTURE_2D, texture->ident);
   program->setUniform(UNIFORM_TEXTURE, 0);
