@@ -12,6 +12,24 @@
 
 using namespace std;
 
+void Program::enableAttribs(const GLchar *n1, const LocationAttrib l1, const GLchar *n2, const LocationAttrib l2, const GLchar *n3, const LocationAttrib l3, const GLchar *n4, const LocationAttrib l4)
+{
+  enableAttrib(n1, l1);
+  
+  if (n2) enableAttrib(n2, l2);
+  if (n3) enableAttrib(n3, l3);
+  if (n4) enableAttrib(n4, l4);
+}
+
+void Program::enableUniforms(const GLchar *n1, const LocationUniform l1, const GLchar *n2, const LocationUniform l2, const GLchar *n3, const LocationUniform l3, const GLchar *n4, const LocationUniform l4)
+{
+  enableUniform(n1, l1);
+  
+  if (n2) enableUniform(n2, l2);
+  if (n3) enableUniform(n3, l3);
+  if (n4) enableUniform(n4, l4);
+}
+
 GLint Program::attrib(const GLchar* attribName) const {
   GLint attrib = glGetAttribLocation(ident, attribName);
   return attrib;

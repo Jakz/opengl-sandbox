@@ -15,8 +15,15 @@
 #include <unordered_map>
 #include <string>
 
-enum LocationAttrib : u32
+enum LocationType : u32
 {
+  LOCATION_ATTRIBUTE,
+  LOCATION_UNIFORM
+};
+
+enum LocationAttrib : s32
+{
+  ATTRIB_NONE = -1,
   ATTRIB_POSITION = 0,
   ATTRIB_COLOR = 1,
   ATTRIB_NORMAL = 2,
@@ -26,8 +33,9 @@ enum LocationAttrib : u32
   ATTRIBS_COUNT
 };
   
-enum LocationUniform : u32
+enum LocationUniform : s32
 {
+  UNIFORM_NONE = -1,
   UNIFORM_MATRIX_MODEL = 0,
   UNIFORM_MATRIX_VIEW,
   UNIFORM_MATRIX_PROJECTION,
@@ -38,6 +46,20 @@ enum LocationUniform : u32
   UNIFORMS_COUNT
 };
 
+struct ShaderBinding
+{
+  const GLchar* name;
+  const LocationType type;
+  union
+  {
+    LocationAttrib attrib;
+    LocationUniform uniform;
+  };
+  
+  ShaderBinding(GLchar *name, LocationType type, LocationAttrib attrib) : name(name), type(type), attrib(attrib) { }
+  ShaderBinding(GLchar *name, LocationType type, LocationUniform uniform) : name(name), type(type), uniform(uniform) { }
+};
+  
 struct Shader
 {
   const GLenum type;
@@ -67,9 +89,22 @@ class Program
       //glBindAttribLocation(ident, location, name);
     }
   
+    void enableAttribs(const GLchar *n1, const LocationAttrib l1, const GLchar *n2 = NULL, const LocationAttrib l2 = ATTRIB_NONE, const GLchar *n3 = NULL, const LocationAttrib l3 = ATTRIB_NONE, const GLchar *n4 = NULL, const LocationAttrib l4 = ATTRIB_NONE);
+
+  
     void enableUniform(const GLchar *name, const LocationUniform location)
     {
       uniforms[location] = glGetUniformLocation(ident, name);
+    }
+  
+    void enableUniforms(const GLchar *n1, const LocationUniform l1, const GLchar *n2 = NULL, const LocationUniform l2 = UNIFORM_NONE, const GLchar *n3 = NULL, const LocationUniform l3 = UNIFORM_NONE, const GLchar *n4 = NULL, const LocationUniform l4 = UNIFORM_NONE);
+  
+    void enableLocation(ShaderBinding binding)
+    {
+      if (binding.type == LOCATION_ATTRIBUTE)
+        enableAttrib(binding.name, binding.attrib);
+      else if (binding.type == LOCATION_UNIFORM)
+        enableUniform(binding.name, binding.uniform);
     }
   
     void enableUniformMatrices(const GLchar *projectionMatrix, const GLchar *viewMatrix, const GLchar *modelMatrix)

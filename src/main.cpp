@@ -100,17 +100,22 @@ static void allocateResources()
   
   Program *program = ShaderCache::program("position_color");
   program->enableUniformMatrices("pMatrix", "vMatrix", "mMatrix");
+  program->enableAttribs("a_position", ATTRIB_POSITION, "a_color", ATTRIB_COLOR);
   program->enableAttrib("a_position", ATTRIB_POSITION);
-  program->enableAttrib("a_color", ATTRIB_COLOR);
   
   ShaderCache::compileAndLink("tiled_surface", "tiled_surface.v.glsl", "tiled_surface.f.glsl");
 
   Program *program2 = ShaderCache::program("tiled_surface");
   program2->enableUniformMatrices("pMatrix", "vMatrix", "mMatrix");
-  program2->enableUniform("tex", UNIFORM_TEXTURE);
-  program2->enableAttrib("a_position", ATTRIB_POSITION);
-  program2->enableAttrib("a_texCoord", ATTRIB_TEX_COORDS);
-  program2->enableUniform("normal", UNIFORM_NORMAL);
+  program2->enableAttribs("a_position", ATTRIB_POSITION, "a_texCoord", ATTRIB_TEX_COORDS);
+  program2->enableUniforms("tex", UNIFORM_TEXTURE, "normal", UNIFORM_NORMAL);
+  
+  /*ShaderCache::compileAndLink("position_texture", "position_texture.v.glsl", "position_texture.f.glsl");
+  
+  Program *program3 = ShaderCache::program("position_texture");
+  program3->enableUniformMatrices("pMatrix", "vMatrix", "mMatrix");
+  program3->enableAttrib("a_position", ATTRIB_POSITION);
+  program3->enableUniform("tex", UNIFORM_TEXTURE);*/
 
   
   // FONDO
@@ -144,7 +149,6 @@ static void allocateResources()
   renderer->addInstance(wall5);
   
   data.program = ShaderCache::linkProgram(vertex, fragment);
-  ShaderCache::linkProgram(data.program);
   data.program->enableAttrib("a_position", ATTRIB_POSITION);
   data.program->enableAttrib("a_color", ATTRIB_COLOR);
   data.program->enableAttrib("a_texCoord", ATTRIB_TEX_COORDS);

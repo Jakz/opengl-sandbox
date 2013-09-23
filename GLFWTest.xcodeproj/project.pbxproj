@@ -34,6 +34,8 @@
 		0468005A17E8B555008492FA /* tiles.png in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0468FF4F17E8B48E008492FA /* tiles.png */; };
 		04E6EE2117E8F4820027583F /* tiled_surface.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0477D59B17E8D462008E6745 /* tiled_surface.f.glsl */; };
 		04E6EE2217E8F4830027583F /* tiled_surface.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 0477D59C17E8D462008E6745 /* tiled_surface.v.glsl */; };
+		04F2B9A717EFE90400580902 /* position_texture.f.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F2B9A517EFE4A400580902 /* position_texture.f.glsl */; };
+		04F2B9A817EFE90600580902 /* position_texture.v.glsl in CopyFiles */ = {isa = PBXBuildFile; fileRef = 04F2B9A617EFE4A400580902 /* position_texture.v.glsl */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -47,6 +49,8 @@
 				0468005A17E8B555008492FA /* tiles.png in CopyFiles */,
 				0468005617E8B550008492FA /* position_color.f.glsl in CopyFiles */,
 				0468005717E8B550008492FA /* position_color.v.glsl in CopyFiles */,
+				04F2B9A717EFE90400580902 /* position_texture.f.glsl in CopyFiles */,
+				04F2B9A817EFE90600580902 /* position_texture.v.glsl in CopyFiles */,
 				0468005817E8B550008492FA /* shader.f.glsl in CopyFiles */,
 				0468005917E8B550008492FA /* shader.v.glsl in CopyFiles */,
 				04E6EE2117E8F4820027583F /* tiled_surface.f.glsl in CopyFiles */,
@@ -328,6 +332,8 @@
 		0478753F17DF6D9B004D083E /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = System/Library/Frameworks/GLUT.framework; sourceTree = SDKROOT; };
 		0478754117DF6DB1004D083E /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = System/Library/Frameworks/IOKit.framework; sourceTree = SDKROOT; };
 		0478754517DF6DFC004D083E /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		04F2B9A517EFE4A400580902 /* position_texture.f.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = position_texture.f.glsl; sourceTree = "<group>"; };
+		04F2B9A617EFE4A400580902 /* position_texture.v.glsl */ = {isa = PBXFileReference; lastKnownFileType = text; path = position_texture.v.glsl; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -437,6 +443,8 @@
 			children = (
 				0468FF4517E8B486008492FA /* position_color.f.glsl */,
 				0468FF4617E8B486008492FA /* position_color.v.glsl */,
+				04F2B9A517EFE4A400580902 /* position_texture.f.glsl */,
+				04F2B9A617EFE4A400580902 /* position_texture.v.glsl */,
 				0468FF4717E8B486008492FA /* shader.f.glsl */,
 				0468FF4817E8B486008492FA /* shader.v.glsl */,
 				0477D59B17E8D462008E6745 /* tiled_surface.f.glsl */,
