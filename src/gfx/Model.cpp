@@ -13,8 +13,12 @@
 using namespace std;
 using namespace glm;
 
+double Renderer::timer = 0.0;
+
 void Renderer::render()
 {
+  timer = glfwGetTime();
+  
   for (vector<AbstractObject*>::iterator it = instances.begin(); it != instances.end(); ++it)
     render(*it);
 }
@@ -85,7 +89,7 @@ void ObjectLines::render()
 
 
 
-ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, ivec3 p2, s32 stepSize, TextureTiled *texture, vec2 tileBase) : AbstractObject(program), type(type), texture(texture)
+ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, ivec3 p2, s32 stepSize, TextureTiled *texture, vec2 tileBase, SurfaceDirection direction) : AbstractObject(program), type(type), texture(texture)
 {
   // TODO: assertiamo che x1
   bool isFloor = p1.y == p2.y;
@@ -94,23 +98,31 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
   ivec3 xDeltas, yDeltas;
   s32 xSteps, ySteps;
   
-  if (isFloor)
+  if (direction == SURFACE_FLOOR || direction == SURFACE_CEIL)
   {
     xDeltas = ivec3(1,0,0),
     yDeltas = ivec3(0,0,1);
     xSteps = abs(p2.x - p1.x);
     ySteps = abs(p2.z - p1.z);
-    normal = vec3(0,1,0);
+    
+    if (direction == SURFACE_FLOOR)
+      normal = vec3(0,1,0);
+    else
+      normal = vec3(0,-1,0);
   }
   else
   {
-    if (isOrthogonal)
+    if (direction == SURFACE_NORTH || direction == SURFACE_SOUTH)
     {
       xDeltas = ivec3(1,0,0),
       yDeltas = ivec3(0,-1,0);
       xSteps = abs(p2.x - p1.x);
       ySteps = abs(p2.y - p1.y);
-      normal = vec3(0,0,1);
+      
+      if (direction == SURFACE_NORTH)
+        normal = vec3(0,0,1);
+      else
+        normal = vec3(0,0,-1);
     }
     else
     {
@@ -118,7 +130,11 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
       yDeltas = ivec3(0,-1,0),
       xSteps = abs(p2.z - p1.z);
       ySteps = abs(p2.y - p1.y);
-      normal = vec3(-1,0,0);
+      
+      if (direction == SURFACE_EAST)
+        normal = vec3(-1,0,0);
+      else
+        normal = vec3(1,0,0);
     }
   }
   
@@ -126,19 +142,19 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
   yDeltas /= stepSize;
   xSteps /= stepSize;
   ySteps /= stepSize;
-  
+    
   for (s32 x = 0; x < xSteps; ++x)
   {
     for (s32 y = 0; y < ySteps; ++y)
     {
       ivec3 base = p1 + xDeltas*x + yDeltas*y;
       
-      vertices.push_back(vec4(base, 1.0f));
-      vertices.push_back(vec4(base+yDeltas, 1.0f));
-      vertices.push_back(vec4(base+xDeltas, 1.0f));
-      vertices.push_back(vec4(base+yDeltas, 1.0f));
-      vertices.push_back(vec4(base+xDeltas+yDeltas, 1.0f));
-      vertices.push_back(vec4(base+xDeltas, 1.0f));
+      vertices.push_back(vec3(base));
+      vertices.push_back(vec3(base+yDeltas));
+      vertices.push_back(vec3(base+xDeltas));
+      vertices.push_back(vec3(base+yDeltas));
+      vertices.push_back(vec3(base+xDeltas+yDeltas));
+      vertices.push_back(vec3(base+xDeltas));
       
       vec2 texBase = tileBase;
       
@@ -172,7 +188,7 @@ void ObjectTiledSurface::mapBuffers()
   glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(vec4), &vertices[0], GL_STATIC_DRAW);
   
   glEnableVertexAttribArray(program->attrib(ATTRIB_POSITION));
-  glVertexAttribPointer(program->attrib(ATTRIB_POSITION), 4, GL_FLOAT, false, 0, (void*)0);
+  glVertexAttribPointer(program->attrib(ATTRIB_POSITION), 3, GL_FLOAT, false, 0, (void*)0);
   
   glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
   glBufferData(GL_ARRAY_BUFFER, texCoords.size()*sizeof(vec2), &texCoords[0], GL_STATIC_DRAW);
@@ -193,11 +209,33 @@ void ObjectTiledSurface::render()
 {
   program->setUniform(UNIFORM_MATRIX_MODEL, modelMatrix);
   program->setUniform(UNIFORM_NORMAL, normal);
-  glActiveTexture(GL_TEXTURE0);
-  glBindTexture(GL_TEXTURE_2D, texture->ident);
+  TextureCache::bind(texture, GL_TEXTURE0);
   program->setUniform(UNIFORM_TEXTURE, 0);
-  
+    
   glBindVertexArray(vao);
   glDrawArrays(type, 0, static_cast<GLsizei>(vertices.size()));
   glBindVertexArray(0);
+}
+
+
+
+
+ObjectParticleEmitter::ObjectParticleEmitter(Program *program, GLenum type) : AbstractObject(program), type(type)
+{
+  
+}
+
+void ObjectParticleEmitter::init(glm::vec3 p)
+{
+  
+}
+
+void ObjectParticleEmitter::mapBuffers()
+{
+  
+}
+
+void ObjectParticleEmitter::render()
+{
+  
 }

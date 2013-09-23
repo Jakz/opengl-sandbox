@@ -14,9 +14,8 @@ in vec4 v_color;
 
 out vec4 fragColor;
 
-void main() {
-
-  vec3 lightPosition = vec3(vec4(2.0,0,-2.5,1));
+vec3 calcLight(vec3 lightPosition, vec3 lightColor)
+{
   vec3 surfaceColor = texture(tex, v_texCoord).rgb;
 
   vec3 position = v_position;
@@ -26,9 +25,13 @@ void main() {
   float lightAttenuation = 1.0;
   float attenuation = 1.0 / (1.0 * 0.4 * pow(length(lightPosition - position),2));
 
-  vec3 diffuse = diffuseCoefficient * surfaceColor.rgb * vec3(0.9,0.9,0.0);
+  return attenuation * diffuseCoefficient * surfaceColor.rgb * lightColor;
+}
 
-  fragColor = vec4(surfaceColor*0.2 + attenuation*diffuse, 1);
+void main() {
+  vec3 diffuse = calcLight(vec3(2,0,-2.5), vec3(0.9,0.9,0.0)) + calcLight(vec3(-2,-1,-2.5), vec3(0.0,0.0,0.8));
+
+  fragColor = vec4(texture(tex, v_texCoord).rgb*0.2 + diffuse, 1);
 
   //fragColor = texture(tex, v_texCoord);
 }

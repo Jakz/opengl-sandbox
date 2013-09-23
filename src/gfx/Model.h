@@ -13,7 +13,7 @@
 
 #include "Camera.h"
 #include "ShaderCache.h"
-#include "Image.h"
+#include "Texture.h"
 
 #include <vector>
 
@@ -23,6 +23,7 @@ class Renderer
 {
   private:
     Camera *cam;
+    static double timer;
   
     std::vector<AbstractObject*> instances;
   
@@ -85,11 +86,21 @@ class ObjectLines : public AbstractObject
   
 };
 
+enum SurfaceDirection
+{
+  SURFACE_CEIL,
+  SURFACE_FLOOR,
+  SURFACE_WEST,
+  SURFACE_EAST,
+  SURFACE_NORTH,
+  SURFACE_SOUTH
+};
+
 class ObjectTiledSurface : public AbstractObject
 {
   private:
     glm::mat4 modelMatrix;
-    std::vector<glm::vec4> vertices;
+    std::vector<glm::vec3> vertices;
     std::vector<glm::vec2> texCoords;
     glm::vec3 normal;
   
@@ -101,7 +112,7 @@ class ObjectTiledSurface : public AbstractObject
     GLuint vbo[3];
   
   public:
-  ObjectTiledSurface(GLenum type, Program *program, glm::ivec3 p1, glm::ivec3 p2, s32 quadSize, TextureTiled *texture, glm::vec2 tileBase);
+    ObjectTiledSurface(GLenum type, Program *program, glm::ivec3 p1, glm::ivec3 p2, s32 quadSize, TextureTiled *texture, glm::vec2 tileBase, SurfaceDirection direction);
   
     void mapBuffers() override;
   
@@ -110,6 +121,27 @@ class ObjectTiledSurface : public AbstractObject
     void translate(const GLfloat x, const GLfloat y, const GLfloat z) { glm::translate(modelMatrix, glm::vec3(x,y,z)); }
   
     void setModelMatrix(glm::mat4 &m) override { modelMatrix = m; }
+};
+
+
+class ObjectParticleEmitter : public AbstractObject
+{
+  private:
+    bool isFirst;
+    u32 currentVB, currentTFB;
+    GLuint vbo;
+    GLuint vao;
+    GLuint tfb[2];
+    GLenum type;
+  
+  public:
+    ObjectParticleEmitter(Program *program, GLenum type);
+  
+    void init(glm::vec3 p);
+  
+    void mapBuffers() override;
+  
+    void render() override;
 };
 
 #endif

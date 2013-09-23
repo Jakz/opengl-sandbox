@@ -6,34 +6,16 @@
 //  Copyright (c) 2013 Jack. All rights reserved.
 //
 
-#ifndef _IMAGE_H_
-#define _IMAGE_H_
+#ifndef _TEXTURE_H_
+#define _TEXTURE_H_
 
 #include "Includes.h"
+#include "Image.h"
 
-class Image
+struct TextureCoord
 {
-  public:
-    enum Format {
-      FORMAT_RGB = 3,
-      FORMAT_RGBA = 4
-    };
-
-  public:
-    Image(const char *filename);
-  
-    u8 *pixels() { return data; }
-    u32 width() { return w; }
-    u32 height() { return h; }
-    Format format() { return f; }
-  
-  
-  private:
-    u8 *data;
-    s32 w;
-    s32 h;
-    Format f;
-  
+  glm::vec2 base;
+  glm::vec2 offset;
 };
 
 
@@ -62,17 +44,28 @@ class Texture
       return ident;
     }
   
+    const GLuint ident;
 
   public:
-    const GLuint ident;
+    
     const u16 width, height;
   
     Texture(GLuint ident, u16 width, u16 height) : ident(ident), width(width), height(height) { }
+  
+    TextureCoord coords(u16 x, u16 y, u16 w, u16 h)
+    {
+      glm::vec2 base = glm::vec2( static_cast<float>(x) / width, static_cast<float>(y) / height);
+      glm::vec2 offset = glm::vec2( static_cast<float>(w)/this->width, static_cast<float>(h)/this->height);
+      
+      return TextureCoord{base, offset};
+    }
   
     static Texture *generate(Image* image, GLint minMagFilter = GL_NEAREST, GLint wrap = GL_CLAMP_TO_EDGE)
     {
       return new Texture(prepareTexture(image, minMagFilter, wrap), image->width(), image->height());
     }
+  
+  friend class TextureCache;
 };
 
 class TextureTiled : public Texture
@@ -87,6 +80,20 @@ class TextureTiled : public Texture
     {
       return new TextureTiled(prepareTexture(image, minMagFilter, wrap), image->width(), image->height(), tileWidth, tileHeight);
     }
+};
+
+class TextureCache
+{
+  private:
+    static GLint *cache;
+    static u32 maxTextures;
+  
+  public:
+    static void init();
+  
+    static void bind(Texture *texture, GLenum unit);
+  
+  
 };
 
 struct Material

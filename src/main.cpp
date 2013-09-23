@@ -88,6 +88,8 @@ using namespace glm;
 
 static void allocateResources()
 {
+  TextureCache::init();
+  
   data.image = new Image("tiles.png");
   data.texture = TextureTiled::generate(data.image, 32, 32, GL_NEAREST);
   
@@ -111,19 +113,35 @@ static void allocateResources()
   program2->enableUniform("normal", UNIFORM_NORMAL);
 
   
-  ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, data.texture, vec2(0.0f,0.25f));
+  // FONDO
+  ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, data.texture, vec2(0.0f,0.25f), SURFACE_NORTH);
   wall->mapBuffers();
   renderer->addInstance(wall);
   
-  ObjectTiledSurface *wall3 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(3,2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f));
+  // CIMA
+  ObjectTiledSurface *wall6 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,0), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_SOUTH);
+  wall6->mapBuffers();
+  renderer->addInstance(wall6);
+  
+  // DX
+  ObjectTiledSurface *wall3 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(3,2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_EAST);
   wall3->mapBuffers();
   renderer->addInstance(wall3);
   
-  ObjectTiledSurface *wall2 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,-2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.0f));
+  // SX
+  ObjectTiledSurface *wall4 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(-4,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_WEST);
+  wall4->mapBuffers();
+  renderer->addInstance(wall4);
+  
+  // SOTTO
+  ObjectTiledSurface *wall2 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,-2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.0f), SURFACE_FLOOR);
   wall2->mapBuffers();
   renderer->addInstance(wall2);
   
-  
+  // SOPRA
+  ObjectTiledSurface *wall5 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,2,0), 1, data.texture, vec2(0.0f,0.0f), SURFACE_CEIL);
+  wall5->mapBuffers();
+  renderer->addInstance(wall5);
   
   data.program = ShaderCache::linkProgram(vertex, fragment);
   ShaderCache::linkProgram(data.program);
@@ -278,7 +296,7 @@ int main(int argc, const char * argv[])
   
   glm::mat4 modelMatrix;
 
-  renderer->camera()->setProjection(50.0f, 800.0f/600.0f, 0.1, 100.0f);
+  renderer->camera()->setProjection(80.0f, 800.0f/600.0f, 0.1, 100.0f);
   renderer->camera()->translate(glm::vec3(0.0f,0.0f,3.0f));
   //renderer->camera()->lookAt(glm::vec3(0.0f,0.0f,1.0f), glm::vec3(0.0f), glm::vec3(0,1,0));
   
@@ -330,9 +348,13 @@ int main(int argc, const char * argv[])
   ratio = width / (float) height;
   glViewport(0, 0, width, height);
   
+  
+  glEnable(GL_CULL_FACE);
+  
   while (!glfwWindowShouldClose(window))
   {
     data.timer = glfwGetTime();
+    
     
     modelMatrix = glm::rotate(glm::translate(glm::scale(glm::mat4(1.0f),glm::vec3(0.5f,0.5f,0.5f)), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
     glm::mat4 lmodelMatrix = glm::rotate(glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -3.0f)), data.timer*50.0f, glm::vec3(1.0,1.0,1.0));
