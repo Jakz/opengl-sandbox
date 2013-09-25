@@ -48,7 +48,6 @@ class AbstractObject
   public:
     AbstractObject(Program *program) : program(program) { }
   
-    virtual void mapBuffers() = 0;
     virtual void render() = 0;
   
     virtual void setModelMatrix(glm::mat4 &m) = 0;
@@ -74,7 +73,7 @@ class ObjectLines : public AbstractObject
     void addVertices(glm::vec4 v1, glm::vec4 v2, glm::vec4 c1, glm::vec4 c2);
     void addVertex(glm::vec4 v, glm::vec4 c);
   
-    void mapBuffers() override;
+    void mapBuffers();
   
     void render() override;
   
@@ -114,7 +113,7 @@ class ObjectTiledSurface : public AbstractObject
   public:
     ObjectTiledSurface(GLenum type, Program *program, glm::ivec3 p1, glm::ivec3 p2, s32 quadSize, TextureTiled *texture, glm::vec2 tileBase, SurfaceDirection direction);
   
-    void mapBuffers() override;
+    void mapBuffers();
   
     void render() override;
   
@@ -122,7 +121,6 @@ class ObjectTiledSurface : public AbstractObject
   
     void setModelMatrix(glm::mat4 &m) override { modelMatrix = m; }
 };
-
 
 class ObjectParticleEmitter : public AbstractObject
 {
@@ -139,9 +137,51 @@ class ObjectParticleEmitter : public AbstractObject
   
     void init(glm::vec3 p);
   
-    void mapBuffers() override;
+    void mapBuffers();
   
     void render() override;
 };
+
+
+class Asset
+{
+  private:
+    std::vector<glm::vec3> vertices;
+    std::vector<glm::vec2> texCoords;
+
+    GLenum type;
+    
+    GLuint vao;
+    GLuint vbo[2];
+  
+    Texture *texture;
+ 
+  protected:
+    Program *program;
+  
+  public:
+    Asset(GLenum type);
+  
+    void addOrthoQuad(glm::vec3 pt1, glm::vec3 pt2, TextureCoord coord);
+    void mapBuffers();
+    void render();
+  
+  friend class ObjectAsset;
+};
+
+class ObjectAsset : public AbstractObject
+{
+  private:
+    Asset *asset;
+    glm::mat4 modelMatrix;
+  
+  public:
+    ObjectAsset(Asset *asset) : AbstractObject(asset->program), asset(asset) { }
+  
+    void setModelMatrix(glm::mat4 &m) override { modelMatrix = m; }
+  
+    void render() override;
+};
+
 
 #endif

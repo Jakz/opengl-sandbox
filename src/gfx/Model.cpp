@@ -180,7 +180,7 @@ ObjectTiledSurface::ObjectTiledSurface(GLenum type, Program *program, ivec3 p1, 
 
 void ObjectTiledSurface::mapBuffers()
 {
-  glGetError();
+  //glGetError();
   
   glBindVertexArray(vao);
   
@@ -198,11 +198,11 @@ void ObjectTiledSurface::mapBuffers()
   
   glBindVertexArray(0);
   
-  GLenum error = glGetError();
+  /*GLenum error = glGetError();
   if (error != GL_NO_ERROR)
   {
     std::cout << "ERROR: " << gluErrorString(error) << std::endl;
-  }
+  }*/
 }
 
 void ObjectTiledSurface::render()
@@ -238,4 +238,83 @@ void ObjectParticleEmitter::mapBuffers()
 void ObjectParticleEmitter::render()
 {
   
+}
+
+
+Asset::Asset(GLenum type) : type(type)
+{
+  glGenVertexArrays(1, &vao);
+  glGenBuffers(2, &vbo[0]);
+}
+
+
+void Asset::addOrthoQuad(vec3 pt1, vec3 pt2, TextureCoord coord)
+{
+  if (pt1.z == pt2.z)
+  {
+    vertices.push_back(pt1);
+    vertices.push_back(pt1 + vec3(0,pt2.y,0));
+    vertices.push_back(pt1 + vec3(pt2.x,0,0));
+    vertices.push_back(pt2);
+  }
+  else if (pt1.x == pt2.x)
+  {
+    vertices.push_back(pt1);
+    vertices.push_back(pt1 + vec3(0,pt2.y,0));
+    vertices.push_back(pt1 + vec3(0,0,pt2.z));
+    vertices.push_back(pt2);
+  }
+  else if (pt1.y == pt2.y)
+  {
+    vertices.push_back(pt1);
+    vertices.push_back(pt1 + vec3(0,0,pt2.z));
+    vertices.push_back(pt1 + vec3(pt2.x,0,0));
+    vertices.push_back(pt2);
+  }
+  else
+  {
+    // TODO: should never happen
+  }
+  
+  texCoords.push_back(coord.base);
+  texCoords.push_back(coord.base + coord.offset.t);
+  texCoords.push_back(coord.base + coord.offset.s);
+  texCoords.push_back(coord.base + coord.offset);
+}
+
+void Asset::mapBuffers()
+{
+  glBindVertexArray(vao);
+  
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[0]);
+  glBufferData(GL_ARRAY_BUFFER, vertices.size()*sizeof(vec4), &vertices[0], GL_STATIC_DRAW);
+  
+  glEnableVertexAttribArray(program->attrib(ATTRIB_POSITION));
+  glVertexAttribPointer(program->attrib(ATTRIB_POSITION), 3, GL_FLOAT, false, 0, (void*)0);
+  
+  glBindBuffer(GL_ARRAY_BUFFER, vbo[1]);
+  glBufferData(GL_ARRAY_BUFFER, texCoords.size()*sizeof(vec2), &texCoords[0], GL_STATIC_DRAW);
+  
+  glEnableVertexAttribArray(program->attrib(ATTRIB_TEX_COORDS));
+  glVertexAttribPointer(program->attrib(ATTRIB_TEX_COORDS), 2, GL_FLOAT, false, 0, (void*)0);
+  
+  glBindVertexArray(0);
+}
+
+void Asset::render()
+{
+  TextureCache::bind(texture, GL_TEXTURE0);
+  program->setUniform(UNIFORM_TEXTURE, 0);
+  
+  glBindVertexArray(vao);
+  glDrawArrays(type, 0, static_cast<GLsizei>(vertices.size()));
+  glBindVertexArray(0);
+}
+
+
+
+void ObjectAsset::render()
+{
+  program->setUniform(UNIFORM_MATRIX_MODEL, modelMatrix);
+  asset->render();
 }

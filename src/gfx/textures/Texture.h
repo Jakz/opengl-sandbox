@@ -18,32 +18,12 @@ struct TextureCoord
   glm::vec2 offset;
 };
 
+class TextureTiled;
+
 
 class Texture
 {
-  protected:
-    static GLuint prepareTexture(Image* image, GLint minMagFilter = GL_NEAREST, GLint wrap = GL_CLAMP_TO_EDGE)
-    {
-      GLenum format;
-      switch(image->format())
-      {
-        case Image::FORMAT_RGB: format = GL_RGB; break;
-        case Image::FORMAT_RGBA: format = GL_RGBA; break;
-      }
-      
-      GLuint ident;
-      glGenTextures(1, &ident);
-      glBindTexture(GL_TEXTURE_2D, ident);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, minMagFilter);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, minMagFilter);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap);
-      glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap);
-      glTexImage2D(GL_TEXTURE_2D, 0, format, image->width(), image->height(), 0, format, GL_UNSIGNED_BYTE, image->pixels());
-      glBindTexture(GL_TEXTURE_2D, 0);
-      
-      return ident;
-    }
-  
+  protected:  
     const GLuint ident;
 
   public:
@@ -60,10 +40,7 @@ class Texture
       return TextureCoord{base, offset};
     }
   
-    static Texture *generate(Image* image, GLint minMagFilter = GL_NEAREST, GLint wrap = GL_CLAMP_TO_EDGE)
-    {
-      return new Texture(prepareTexture(image, minMagFilter, wrap), image->width(), image->height());
-    }
+    TextureTiled *asTiled() { return (TextureTiled*)this; }
   
   friend class TextureCache;
 };
@@ -75,11 +52,6 @@ class TextureTiled : public Texture
     const u16 tileWidth, tileHeight;
   
     TextureTiled(GLuint ident, u16 width, u16 height, u16 tileWidth, u16 tileHeight) : Texture(ident, width, height), rows(width/tileWidth), cols(height/tileHeight), tileWidth(tileWidth), tileHeight(tileHeight) { }
-  
-    static TextureTiled *generate(Image* image, u16 tileWidth, u16 tileHeight, GLint minMagFilter = GL_NEAREST, GLint wrap = GL_CLAMP_TO_EDGE)
-    {
-      return new TextureTiled(prepareTexture(image, minMagFilter, wrap), image->width(), image->height(), tileWidth, tileHeight);
-    }
 };
 
 class TextureCache
@@ -92,8 +64,6 @@ class TextureCache
     static void init();
   
     static void bind(Texture *texture, GLenum unit);
-  
-  
 };
 
 struct Material

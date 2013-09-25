@@ -9,9 +9,10 @@
 
 #include "Includes.h"
 
+#include "TextureLibrary.h"
 
-#include "FileUtils.h"
 #include "ShaderCache.h"
+#include "FileUtils.h"
 #include "Model.h"
 
 #include "Image.h"
@@ -45,9 +46,6 @@ struct Data
   GLuint vao;
   
   Program* program;
-  
-  Image *image;
-  TextureTiled *texture;
   
   float timer;
   
@@ -89,9 +87,8 @@ using namespace glm;
 static void allocateResources()
 {
   TextureCache::init();
-  
-  data.image = new Image("tiles.png");
-  data.texture = TextureTiled::generate(data.image, 32, 32, GL_NEAREST);
+  TextureLibrary::generateTiled(TEXTURE_TILES, new Image("tiles.png"), 32, 32, GL_NEAREST);
+  TextureLibrary::generate(TEXTURE_BULLETS, new Image("bullets.png"), GL_NEAREST);
   
   Shader *vertex = ShaderCache::compileVertexShader("shader.v.glsl");
   Shader *fragment = ShaderCache::compileFragmentShader("shader.f.glsl");
@@ -117,34 +114,35 @@ static void allocateResources()
   program3->enableAttrib("a_position", ATTRIB_POSITION);
   program3->enableUniform("tex", UNIFORM_TEXTURE);*/
 
+  TextureTiled *texture = TextureLibrary::get(TEXTURE_TILES)->asTiled();
   
   // FONDO
-  ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, data.texture, vec2(0.0f,0.25f), SURFACE_NORTH);
+  ObjectTiledSurface *wall = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,-2,-4), 1, texture, vec2(0.0f,0.25f), SURFACE_NORTH);
   wall->mapBuffers();
   renderer->addInstance(wall);
   
   // CIMA
-  ObjectTiledSurface *wall6 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,0), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_SOUTH);
+  ObjectTiledSurface *wall6 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,0), ivec3(3,-2,0), 1, texture, vec2(0.0f,0.25f), SURFACE_SOUTH);
   wall6->mapBuffers();
   renderer->addInstance(wall6);
   
   // DX
-  ObjectTiledSurface *wall3 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(3,2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_EAST);
+  ObjectTiledSurface *wall3 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(3,2,-4), ivec3(3,-2,0), 1, texture, vec2(0.0f,0.25f), SURFACE_EAST);
   wall3->mapBuffers();
   renderer->addInstance(wall3);
   
   // SX
-  ObjectTiledSurface *wall4 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(-4,-2,0), 1, data.texture, vec2(0.0f,0.25f), SURFACE_WEST);
+  ObjectTiledSurface *wall4 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(-4,-2,0), 1, texture, vec2(0.0f,0.25f), SURFACE_WEST);
   wall4->mapBuffers();
   renderer->addInstance(wall4);
   
   // SOTTO
-  ObjectTiledSurface *wall2 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,-2,-4), ivec3(3,-2,0), 1, data.texture, vec2(0.0f,0.0f), SURFACE_FLOOR);
+  ObjectTiledSurface *wall2 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,-2,-4), ivec3(3,-2,0), 1, texture, vec2(0.0f,0.0f), SURFACE_FLOOR);
   wall2->mapBuffers();
   renderer->addInstance(wall2);
   
   // SOPRA
-  ObjectTiledSurface *wall5 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,2,0), 1, data.texture, vec2(0.0f,0.0f), SURFACE_CEIL);
+  ObjectTiledSurface *wall5 = new ObjectTiledSurface(GL_TRIANGLES, program2, ivec3(-4,2,-4), ivec3(3,2,0), 1, texture, vec2(0.0f,0.0f), SURFACE_CEIL);
   wall5->mapBuffers();
   renderer->addInstance(wall5);
   
